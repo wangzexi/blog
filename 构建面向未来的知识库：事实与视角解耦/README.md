@@ -3,7 +3,7 @@ created_at: null
 updated_at: null
 ---
 
-# 知识库的事实与视角解耦
+# 构建面向未来的知识库：事实与视角解耦
 
 ```text
 Knowledge = Perspective(Facts)
