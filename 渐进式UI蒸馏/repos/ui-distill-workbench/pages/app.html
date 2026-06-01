@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1179, initial-scale=1" />
+    <title>UI Distill Target</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      :root {
+        --screen-width: 1179px;
+        --screen-height: 2556px;
+        font-family: "PingFangSC-Regular", "PingFang SC", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      }
+
+      html,
+      body {
+        width: var(--screen-width);
+        height: var(--screen-height);
+        margin: 0;
+        overflow: hidden;
+        background: #f4f6f8;
+      }
+
+      .screen {
+        width: var(--screen-width);
+        height: var(--screen-height);
+        overflow: hidden;
+        background: #f4f6f8;
+      }
+
+      .page {
+        width: var(--screen-width);
+        height: var(--screen-height);
+        padding: 174px 54px 54px;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 153.334px;
+        transform: translateY(-1.333px);
+        margin-bottom: 54px;
+      }
+
+      .location {
+        color: #6d798a;
+        font-size: 38px;
+        font-weight: 500;
+        line-height: 48px;
+        transform: translate(-2px, 11px);
+      }
+
+      .title {
+        color: #121926;
+        font-size: 88px;
+        font-weight: 900;
+        letter-spacing: 0.5px;
+        line-height: 111px;
+        margin-top: 12px;
+        transform: translate(-2px, 3.5px) scaleY(1.005);
+      }
+
+      .avatar {
+        width: 126px;
+        height: 126px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 63px;
+        background: #111827;
+      }
+
+      .avatar-text {
+        color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+        font-size: 51px;
+        font-weight: 800;
+        line-height: 61px;
+      }
+
+      .search-box {
+        height: 138px;
+        display: flex;
+        align-items: center;
+        border-radius: 51px;
+        background: #ffffff;
+        transform: translateY(-0.666px);
+        padding: 0 42px;
+        margin-bottom: 48px;
+      }
+
+      .search-icon {
+        color: #9aa4b2;
+        font-size: 60px;
+        font-weight: 700;
+        line-height: 72px;
+        margin-right: 24px;
+      }
+
+      .search-text {
+        color: #9aa4b2;
+        font-size: 42px;
+        font-weight: 500;
+        line-height: 51px;
+        transform: scaleY(0.993) scaleX(0.995);
+      }
+
+      .hero {
+        height: 438px;
+        overflow: hidden;
+        display: flex;
+        border-radius: 78px;
+        background: #ffedd5;
+        transform: translateY(-0.666px);
+        margin-bottom: 54px;
+      }
+
+      .hero-copy {
+        flex: 1;
+        padding-top: 54px;
+        padding-left: 54px;
+      }
+
+      .hero-kicker {
+        color: #c5440f;
+        font-size: 36px;
+        font-weight: 800;
+        line-height: 43px;
+        transform: scaleY(1.01);
+      }
+
+      .hero-title {
+        width: 570px;
+        color: #431407;
+        font-size: 70.5px;
+        font-weight: 800;
+        letter-spacing: -2px;
+        line-height: 92px;
+        margin-top: 27px;
+        transform: translateX(-2px) scaleY(1.003);
+      }
+
+      .hero-subtitle {
+        color: #9a3412;
+        font-size: 35px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        line-height: 42px;
+        margin-top: 24px;
+      }
+
+      .hero-plate {
+        position: relative;
+        width: 348px;
+        display: flex;
+        align-items: center;
+      }
+
+      .plate-outer {
+        width: 264px;
+        height: 264px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 132px;
+        background: #ffffff;
+      }
+
+      .plate-inner {
+        width: 162px;
+        height: 162px;
+        border-radius: 81px;
+        background: #fb923c;
+      }
+
+      .plate-dot-one {
+        position: absolute;
+        top: 84px;
+        right: 54px;
+        width: 54px;
+        height: 54px;
+        border-radius: 27px;
+        background: #facc15;
+      }
+
+      .plate-dot-two {
+        position: absolute;
+        right: 108px;
+        bottom: 72px;
+        width: 36px;
+        height: 36px;
+        border-radius: 18px;
+        background: #22c55e;
+      }
+
+      .filter-row {
+        display: flex;
+        align-items: center;
+        background: transparent;
+        transform: translateY(-0.5px);
+        margin-bottom: 42px;
+      }
+
+      .filter-active,
+      .filter {
+        height: 96px;
+        overflow: hidden;
+        border-radius: 48px;
+        font-size: 39px;
+        line-height: 96px;
+        margin-right: 27px;
+        white-space: nowrap;
+      }
+
+      .filter-active {
+        background: #111827;
+        color: #ffffff;
+        font-weight: 800;
+        padding: 0 48px;
+      }
+
+      .filter {
+        background: #ffffff;
+        color: #4b5565;
+        font-weight: 700;
+        padding: 0 42px;
+      }
+
+      .order-card {
+        height: 662px;
+        border-radius: 72px;
+        background: #ffffff;
+        transform: translateY(-1.05px);
+        padding: 48px;
+        margin-bottom: 54px;
+      }
+
+      .card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 42px;
+      }
+
+      .card-label {
+        color: #6d798a;
+        font-size: 34px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        line-height: 43px;
+      }
+
+      .shop-name {
+        color: #111827;
+        font-size: 54px;
+        font-weight: 800;
+        letter-spacing: -2px;
+        line-height: 65px;
+        margin-top: 9px;
+        transform: scaleY(0.99);
+      }
+
+      .card-distance {
+        color: #6d798a;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        line-height: 43px;
+        margin-top: 6px;
+      }
+
+      .food-row {
+        display: flex;
+        margin-bottom: 48px;
+      }
+
+      .food-thumb {
+        width: 228px;
+        height: 228px;
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 60px;
+        background: #fef3c7;
+        margin-right: 39px;
+      }
+
+      .food-emoji {
+        color: #92400e;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+        font-size: 72px;
+        font-weight: 800;
+        line-height: 86px;
+      }
+
+      .food-info {
+        flex: 1;
+        padding-top: 3px;
+      }
+
+      .food-title {
+        color: #121926;
+        font-size: 48px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        line-height: 57px;
+      }
+
+      .food-meta {
+        color: #6d798a;
+        font-size: 35.5px;
+        line-height: 54.5px;
+        margin-top: 15px;
+        transform: scaleY(0.995);
+      }
+
+      .price-row {
+        display: flex;
+        align-items: center;
+        margin-top: 24px;
+      }
+
+      .price {
+        color: #dc2626;
+        font-size: 54.5px;
+        font-weight: 800;
+        letter-spacing: 3px;
+        line-height: 65px;
+        margin-right: 27px;
+        transform: scaleX(0.995);
+      }
+
+      .discount {
+        height: 54px;
+        overflow: hidden;
+        border-radius: 27px;
+        background: #fee2e2;
+        color: #b91c1c;
+        font-size: 32.5px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        line-height: 54px;
+        padding: 0 21px;
+      }
+
+      .primary-button {
+        height: 131px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 66px;
+        background: #ea580c;
+      }
+
+      .primary-button-text {
+        color: #ffffff;
+        font-size: 43px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        line-height: 54px;
+        transform: scaleY(1.005);
+      }
+
+      .section-header {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: transparent;
+        transform: translateY(-0.333px);
+        margin-bottom: 30px;
+      }
+
+      .section-title {
+        color: #111827;
+        font-size: 59px;
+        font-weight: 800;
+        letter-spacing: -2px;
+        line-height: 72px;
+        transform: translate(-0.833px, 1px) scaleY(0.995);
+      }
+
+      .section-more {
+        color: #6d798a;
+        font-size: 36px;
+        font-weight: 700;
+        line-height: 43px;
+      }
+
+      .restaurant-card {
+        display: flex;
+        border-radius: 66px;
+        background: #ffffff;
+        transform: translateY(-1px);
+        padding: 36px;
+        margin-bottom: 30px;
+      }
+
+      .restaurant-card.last {
+        margin-bottom: 48px;
+      }
+
+      .restaurant-thumb {
+        width: 216px;
+        height: 216px;
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 54px;
+        margin-right: 36px;
+      }
+
+      .restaurant-thumb.warm {
+        background: #fde68a;
+      }
+
+      .restaurant-thumb.cool {
+        background: #bbf7d0;
+      }
+
+      .thumb-text {
+        color: #111827;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+        font-size: 66px;
+        font-weight: 800;
+        line-height: 79px;
+      }
+
+      .restaurant-body {
+        flex: 1;
+        padding-top: 6px;
+      }
+
+      .restaurant-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .restaurant-name {
+        color: #111827;
+        font-family: Arial, "PingFang SC", sans-serif;
+        font-size: 49px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        line-height: 61px;
+        transform: scaleY(1.012) scaleX(0.992);
+      }
+
+      .rating {
+        color: #ea580c;
+        font-size: 40px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        line-height: 47px;
+        transform: scaleX(1.005);
+      }
+
+      .restaurant-desc {
+        color: #707c8d;
+        font-size: 35.5px;
+        line-height: 54px;
+        margin-top: 15px;
+        transform: scaleY(0.985);
+      }
+
+      .tag-row {
+        display: flex;
+        margin-top: 24px;
+      }
+
+      .tag,
+      .tag-muted {
+        height: 52px;
+        overflow: hidden;
+        border-radius: 22px;
+        font-size: 33px;
+        line-height: 54px;
+        padding: 0 21px;
+        margin-right: 18px;
+        white-space: nowrap;
+      }
+
+      .tag {
+        background: #fff7ed;
+        color: #c5440f;
+        font-weight: 800;
+      }
+
+      .tag-muted {
+        background: #f1f5f9;
+        color: #68788f;
+        font-weight: 700;
+      }
+
+      .bottom-bar {
+        height: 162px;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        border-radius: 81px;
+        background: #ffffff;
+      }
+
+      .tab-active,
+      .tab {
+        font-size: 39px;
+        line-height: 47px;
+      }
+
+      .tab-active {
+        color: #ea580c;
+        font-weight: 800;
+      }
+
+      .tab {
+        color: #6d798a;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- distill: screen -->
+    <main id="canvas" class="screen">
+      <!-- distill: page -->
+      <div class="page">
+        <!-- distill: nav -->
+        <section class="nav">
+          <div>
+            <div class="location">上海 · 徐汇</div>
+            <div class="title">今晚吃什么</div>
+          </div>
+          <div class="avatar">
+            <div class="avatar-text">Z</div>
+          </div>
+        </section>
+
+        <!-- distill: search -->
+        <section class="search-box">
+          <div class="search-icon">⌕</div>
+          <div class="search-text">搜索餐厅、菜品或商圈</div>
+        </section>
+
+        <!-- distill: hero -->
+        <section class="hero">
+          <div class="hero-copy">
+            <div class="hero-kicker">限时晚餐推荐</div>
+            <div class="hero-title">附近 32 家餐厅正在出餐</div>
+            <div class="hero-subtitle">预计 28 分钟送达，满 49 减 12</div>
+          </div>
+          <div class="hero-plate">
+            <div class="plate-outer">
+              <div class="plate-inner"></div>
+            </div>
+            <div class="plate-dot-one"></div>
+            <div class="plate-dot-two"></div>
+          </div>
+        </section>
+
+        <!-- distill: filters -->
+        <section class="filter-row">
+          <div class="filter-active">全部</div>
+          <div class="filter">快餐</div>
+          <div class="filter">轻食</div>
+          <div class="filter">咖啡</div>
+          <div class="filter">夜宵</div>
+        </section>
+
+        <!-- distill: order-card -->
+        <section class="order-card">
+          <div class="card-header">
+            <div>
+              <div class="card-label">继续上次订单</div>
+              <div class="shop-name">梧桐小馆 · 衡山路店</div>
+            </div>
+            <div class="card-distance">1.2km</div>
+          </div>
+          <div class="food-row">
+            <div class="food-thumb">
+              <div class="food-emoji">饭</div>
+            </div>
+            <div class="food-info">
+              <div class="food-title">黑椒牛肉饭 + 冰柠茶</div>
+              <div class="food-meta">月售 1800 · 4.8 分 · 约 31 分钟</div>
+              <div class="price-row">
+                <div class="price">¥36.8</div>
+                <div class="discount">已省 ¥9</div>
+              </div>
+            </div>
+          </div>
+          <div class="primary-button">
+            <div class="primary-button-text">一键复购</div>
+          </div>
+        </section>
+
+        <!-- distill: recommend-header -->
+        <section class="section-header">
+          <div class="section-title">为你精选</div>
+          <div class="section-more">换一批</div>
+        </section>
+
+        <!-- distill: restaurant-0 -->
+        <section class="restaurant-card">
+          <div class="restaurant-thumb warm">
+            <div class="thumb-text">面</div>
+          </div>
+          <div class="restaurant-body">
+            <div class="restaurant-top">
+              <div class="restaurant-name">三两面馆</div>
+              <div class="rating">4.9</div>
+            </div>
+            <div class="restaurant-desc">招牌牛腩面 · 免配送费 · 28 分钟</div>
+            <div class="tag-row">
+              <div class="tag">满 35 减 6</div>
+              <div class="tag-muted">新客减 5</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- distill: restaurant-1 -->
+        <section class="restaurant-card last">
+          <div class="restaurant-thumb cool">
+            <div class="thumb-text">沙</div>
+          </div>
+          <div class="restaurant-body">
+            <div class="restaurant-top">
+              <div class="restaurant-name">Daily Bowl</div>
+              <div class="rating">4.7</div>
+            </div>
+            <div class="restaurant-desc">鸡胸藜麦碗 · 低卡轻食 · 35 分钟</div>
+            <div class="tag-row">
+              <div class="tag">蛋白加量</div>
+              <div class="tag-muted">准时宝</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- distill: bottom-bar -->
+        <nav class="bottom-bar">
+          <div class="tab-active">首页</div>
+          <div class="tab">订单</div>
+          <div class="tab">会员</div>
+          <div class="tab">我的</div>
+        </nav>
+      </div>
+    </main>
+  </body>
+</html>

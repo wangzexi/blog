@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UI Distill Workbench</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      :root {
+        --phone-width: 1179px;
+        --phone-height: 2556px;
+        --phone-scale: 1;
+        --screen-clip-path: inset(0 round 62px);
+
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: auto;
+        background: #f2f2f2;
+      }
+
+      .preview-root {
+        min-width: 100vw;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px;
+      }
+
+      .device-shell {
+        position: relative;
+        width: calc(var(--phone-width) * var(--phone-scale));
+        height: calc((var(--phone-height) + 96px) * var(--phone-scale));
+        flex: 0 0 auto;
+      }
+
+      .device-shell::before {
+        content: "";
+        position: absolute;
+        left: calc(18px * var(--phone-scale));
+        top: calc(28px * var(--phone-scale));
+        width: calc((var(--phone-width) - 36px) * var(--phone-scale));
+        height: calc((var(--phone-height) - 12px) * var(--phone-scale));
+        border-radius: calc(150px * var(--phone-scale));
+        background: rgba(15, 23, 42, 0.12);
+        filter: blur(calc(46px * var(--phone-scale)));
+        transform: translateY(calc(22px * var(--phone-scale)));
+      }
+
+      .device-label {
+        position: absolute;
+        z-index: 2;
+        right: 0;
+        top: calc((var(--phone-height) + 28px) * var(--phone-scale));
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+        gap: calc(8px * var(--phone-scale));
+        color: #aab2bc;
+        font-size: max(10px, calc(15px * var(--phone-scale)));
+        font-weight: 400;
+        letter-spacing: calc(0.4px * var(--phone-scale));
+        line-height: 1;
+        white-space: nowrap;
+      }
+
+      .device-spec {
+        font-size: inherit;
+        letter-spacing: inherit;
+      }
+
+      .phone {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 1;
+        width: calc(var(--phone-width) * var(--phone-scale));
+        height: calc(var(--phone-height) * var(--phone-scale));
+        overflow: hidden;
+        clip-path: var(--screen-clip-path);
+        background: transparent;
+      }
+
+      .screen-frame {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        width: var(--phone-width);
+        height: var(--phone-height);
+        border: 0;
+        outline: 0;
+        background: #ffffff;
+        transform: scale(var(--phone-scale));
+        transform-origin: left top;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="preview-root">
+      <div class="device-shell">
+        <div class="phone">
+          <iframe class="screen-frame" src="./pages/app.html" title="Distillation target preview"></iframe>
+        </div>
+        <div class="device-label">
+          <span>iPhone 16</span>
+          <span class="device-spec">· 1179 x 2556 px · 393 x 852 pt · 3x</span>
+        </div>
+      </div>
+    </div>
+    <script>
+      const phoneWidth = 1179;
+      const phoneHeight = 2556;
+      const labelHeight = 96;
+      const screenCornerRadiusPx = 165;
+      const screenCurveExponent = 4.8;
+
+      function screenClipPath(width, height, radius, exponent, steps = 18) {
+        const rx = (radius / width) * 100;
+        const ry = (radius / height) * 100;
+        const points = [];
+
+        function add(x, y) {
+          points.push(`${x.toFixed(3)}% ${y.toFixed(3)}%`);
+        }
+
+        function curve(value) {
+          return Math.pow(value, 2 / exponent);
+        }
+
+        add(50, 0);
+        add(100 - rx, 0);
+
+        for (let index = 0; index <= steps; index += 1) {
+          const angle = (Math.PI / 2) * (index / steps);
+          add(100 - rx + rx * curve(Math.sin(angle)), ry - ry * curve(Math.cos(angle)));
+        }
+
+        add(100, 50);
+        add(100, 100 - ry);
+
+        for (let index = 0; index <= steps; index += 1) {
+          const angle = (Math.PI / 2) * (index / steps);
+          add(100 - rx + rx * curve(Math.cos(angle)), 100 - ry + ry * curve(Math.sin(angle)));
+        }
+
+        add(50, 100);
+        add(rx, 100);
+
+        for (let index = 0; index <= steps; index += 1) {
+          const angle = (Math.PI / 2) * (index / steps);
+          add(rx - rx * curve(Math.sin(angle)), 100 - ry + ry * curve(Math.cos(angle)));
+        }
+
+        add(0, 50);
+        add(0, ry);
+
+        for (let index = 0; index <= steps; index += 1) {
+          const angle = (Math.PI / 2) * (index / steps);
+          add(rx - rx * curve(Math.cos(angle)), ry - ry * curve(Math.sin(angle)));
+        }
+
+        return `polygon(${points.join(", ")})`;
+      }
+
+      document.documentElement.style.setProperty(
+        "--screen-clip-path",
+        screenClipPath(phoneWidth, phoneHeight, screenCornerRadiusPx, screenCurveExponent),
+      );
+
+      function updatePhoneScale() {
+        const padding = 96;
+        const scaleX = (window.innerWidth - padding) / phoneWidth;
+        const scaleY = (window.innerHeight - padding) / (phoneHeight + labelHeight);
+        const scale = Math.max(0.1, Math.min(scaleX, scaleY, 1));
+
+        document.documentElement.style.setProperty("--phone-scale", String(scale));
+      }
+
+      updatePhoneScale();
+      window.addEventListener("resize", updatePhoneScale);
+    </script>
+  </body>
+</html>
