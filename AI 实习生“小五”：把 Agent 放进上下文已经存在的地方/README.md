@@ -1,6 +1,6 @@
 ---
-created_at: null
-updated_at: null
+created_at: "2026-04-23 20:16:40 +0800"
+updated_at: "2026-04-23 20:16:40 +0800"
 ---
 
 # AI 实习生“小五”：把 Agent 放进上下文已经存在的地方
@@ -9,9 +9,7 @@ updated_at: null
 
 大家好，今天我想介绍的不是一个聊天机器人，而是一个在企业 IM 里工作的数字员工，名字叫 `小五`。
 
-先给大家看一个真实案例，这样大家先知道小五到底是在干嘛，再去理解后面的架构和原理。
-
-AI 实习生“小五”实战真实产品需求：业务页面卖点信息优化。
+先从一句话定义开始，再解释它背后的架构和原理。
 
 如果先用一句话定义它，那就是：
 
@@ -99,13 +97,9 @@ flowchart LR
 graph LR
     User[用户\n企业 IM 群/私聊]
 
-    subgraph Cloud[云服务]
-        DX[企业 IM]
-        Relay[message-relay\n云端 Gateway]
-    end
-
     subgraph Mini[Mac Mini]
-        Bot[bot-service\n本地 Bot]
+        IM[企业 IM 回调]
+        Bot[bot-service]
         OC[OpenCode\nAI 引擎]
         Skills[skill-repo\n技能仓库]
         MCP[playwright-mcp]
@@ -114,9 +108,8 @@ graph LR
         iOS[iOS 设备/模拟器]
     end
 
-    User -->|发送消息| DX
-    DX -->|Thrift 回调| Relay
-    Relay -->|拉取消息| Bot
+    User -->|发送消息| IM
+    IM -->|回调| Bot
     Bot -->|派发任务| OC
     Skills -->|挂载技能| OC
     OC -->|调用 MCP| MCP
@@ -124,9 +117,8 @@ graph LR
     OC -->|调用技能| IOSSkill
     IOSSkill -->|WebDriverAgent| iOS
     OC -->|生成回复| Bot
-    Bot -->|回传响应| Relay
-    Relay -->|Thrift 发送| DX
-    DX -->|回复| User
+    Bot -->|回传响应| IM
+    IM -->|回复| User
 
     style OC fill:#fff2a8,stroke:#d48806,stroke-width:3px,color:#222
 ```
@@ -135,7 +127,7 @@ graph LR
 
 前面那张图讲的是通用 Agent 的最小工作原理，而这张图讲的是我们怎么把这套原理落成一个具体系统。
 
-这里我特意把 `OpenCode` 高亮出来，因为它对应的就是第一部分讲的那个 Agent 核心循环。外围再由 `bot-service` 负责消息调度、由 `skill-repo` 负责技能沉淀、由 `message-relay` 负责接入企业 IM。
+这里我特意把 `OpenCode` 高亮出来，因为它对应的就是第一部分讲的那个 Agent 核心循环。外围再由 `bot-service` 负责接入企业 IM、消息调度和回传，由 `skill-repo` 负责技能沉淀。
 
 `小五` 的具象能力，我觉得可以先看 3 个：
 
@@ -230,15 +222,15 @@ I/O 不是 Agent 的全部，它只是用户最直接感知到的那层表皮。
 整个链路并不复杂，大致是这样：
 
 1. 用户在企业 IM 群聊或者私聊里发消息。
-2. 消息先进入云端的 `message-relay`。
-3. `bot-service` 通过长轮询拉取消息，并按聊天上下文派发。
+2. 企业 IM 把消息回调给 `bot-service`。
+3. `bot-service` 按聊天上下文派发任务。
 4. `bot-service` 把任务交给 `OpenCode` 执行。
 5. `OpenCode` 再去调用浏览器、iOS 模拟器、本地开发环境等工具。
-6. 结果回传给 `bot-service`，再通过 relay 发回企业 IM。
+6. 结果回传给 `bot-service`，再发回企业 IM。
 
 如果压缩成一句话，就是：
 
-> 企业 IM负责协作场景，relay 负责消息桥接，bot-service 负责会话派发和回传，OpenCode 负责推理和执行，工具环境负责把任务真正做完。
+> 企业 IM 负责协作场景，bot-service 负责接入、会话派发和回传，OpenCode 负责推理和执行，工具环境负责把任务真正做完。
 
 ## 第六部分：这套实现里最值得讲的几个工程点
 
