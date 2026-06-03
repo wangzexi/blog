@@ -1,6 +1,6 @@
 ---
-created_at: null
-updated_at: null
+created_at: "2026-05-24 16:24:47 +0800"
+updated_at: "2026-05-24 16:24:47 +0800"
 ---
 
 # 构建面向未来的知识库：事实与视角解耦

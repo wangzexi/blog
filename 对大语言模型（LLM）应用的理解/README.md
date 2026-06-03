@@ -28,8 +28,8 @@ code = llm(`${对话历史} ${文档上下文} ${代码上下文} ${用户问题
 具体就是，把各种文本拼起来，然后送入LLM期盼结果。
 
 ```TypeScript
-const 对话历史 = '对话历史：用户：公司内部有个Design System 组件库；系统：好的，有什么需要我帮忙的吗？'
-const 文档上下文 = '检索到的文档：MTD 表单/Form 用以收集、校验或提交数据，主要由输入框、选择器、单选按钮组、复选框等录入项和操作按钮等构成。代码示例：<mtd-form><mtd-form-item label="表单标题1"><mtd-input type="text" v-model="text" placeholder="请输入"/></mtd-form-item><mtd-form-item label="表单标题2"><mtd-input type="text" v-model="fields.value" placeholder="请输入"/></mtd-form-item><mtd-form-item><mtd-button type="primary">提交</mtd-button></mtd-form-item></mtd-form>'
+const 对话历史 = '对话历史：用户：请你帮我设计一个表单组件；系统：好的，先确认需求再开始。'
+const 文档上下文 = '检索到的文档：表单组件 文档示例，用以收集、校验或提交数据，主要由输入框、选择器、单选按钮组、复选框等录入项和操作按钮等构成。'
 const 代码上下文 = '用户当前代码：<template><div></div></template>'
 const 用户问题 = '用户问题：帮我写个包含用户名、密码的登录表单'
 
