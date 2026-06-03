@@ -1,6 +1,6 @@
 ---
-created_at: null
-updated_at: null
+created_at: "2026-06-02 01:05:41 +0800"
+updated_at: "2026-06-02 02:15:38 +0800"
 ---
 
 # 渐进式 UI 蒸馏：用视觉反馈把 UI 迁移到任何渲染器
