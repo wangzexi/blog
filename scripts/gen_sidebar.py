@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import os
 import pathlib
-import urllib.parse
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -44,7 +42,7 @@ def main() -> int:
     lines = ["- [首页](/)"]
     for folder in dirs:
         title = article_title(folder)
-        link = urllib.parse.quote(f"{folder.name}/README.md")
+        link = f"{folder.name}/README.md".replace(" ", "%20")
         lines.append(f"- [{title}]({link})")
 
     TARGET.write_text("\n".join(lines) + "\n", encoding="utf-8")
