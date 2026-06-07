@@ -46,9 +46,9 @@ updated_at: "2026-06-05 23:35:00 +0800"
 
 | PR | 仓库 | 变更点 | 为什么适合作为熵减 |
 | --- | --- | --- | --- |
-| `[熵减] 简化 CommonGoodsShelf 货架容器组件` `/内部链接_已脱敏/mlive-packages/pr/4950` | `ssa/mlive-packages` | 删除 `packages/CommonGoodsShelf/src/GoodsShelfContainer.tsx` 里的空 `Props` / `State` 和空 constructor | 低风险、行为不变，减少后续阅读噪音 |
-| `[熵减] 简化自建商详单元素样式数组` `/内部链接_已脱敏/mlive-hotel/pr/1605` | `ssa/mlive-hotel` | 将自建商详里的 `style={[styles.xxx]}` 改成 `style={styles.xxx}` | 去掉无语义的单元素数组构造，行为不变，也少了一次不必要的数组创建 |
-| `[熵减] 修正订单页返回按钮函数拼写` `/内部链接_已脱敏/mlive-hotel/pr/1606` | `ssa/mlive-hotel` | 将订单页里的 `renderBackButon` 修正为 `renderBackButton`，并同步调用点 | 修正 typo，方便后续检索和维护 |
+| `[熵减] 简化 CommonGoodsShelf 货架容器组件` | `ssa/mlive-packages` | 删除 `packages/CommonGoodsShelf/src/GoodsShelfContainer.tsx` 里的空 `Props` / `State` 和空 constructor | 低风险、行为不变，减少后续阅读噪音 |
+| `[熵减] 简化自建商详单元素样式数组` | `ssa/mlive-hotel` | 将自建商详里的 `style={[styles.xxx]}` 改成 `style={styles.xxx}` | 去掉无语义的单元素数组构造，行为不变，也少了一次不必要的数组创建 |
+| `[熵减] 修正订单页返回按钮函数拼写` | `ssa/mlive-hotel` | 将订单页里的 `renderBackButon` 修正为 `renderBackButton`，并同步调用点 | 修正 typo，方便后续检索和维护 |
 
 其中第一个货架 PR 最有代表性。
 
@@ -201,7 +201,7 @@ AI 可以推动 review
 
 治理类工作短期收益不明显，如果一个 PR 读起来很累，reviewer 很快就会失去耐心。所以它应该尽量满足一个标准：人类最好能在 60 秒内看懂问题模式、风险边界和验证结论。
 
-`[熵减] 简化自建商详单元素样式数组` `/内部链接_已脱敏/mlive-hotel/pr/1605` 是一个例子。它改了 7 个业务文件里的 8 处位置，但问题模式完全一致：都是把无语义的单元素 `style` 数组从 `style={[styles.xxx]}` 改成 `style={styles.xxx}`。
+`[熵减] 简化自建商详单元素样式数组` 是一个例子。它改了 7 个业务文件里的 8 处位置，但问题模式完全一致：都是把无语义的单元素 `style` 数组从 `style={[styles.xxx]}` 改成 `style={styles.xxx}`。
 
 所以 PR 粒度应该是“认知一致”，不是“diff 小”。一个小的、清楚的 review，也适合放在一天开始时作为进入工作状态的入口。
 
