@@ -1,0 +1,38 @@
+name: deploy-blog
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Configure kubectl config
+        env:
+          KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
+        run: |
+          if [ -z "${KUBECONFIG_B64}" ]; then
+            echo "KUBECONFIG_B64 is not configured, skip deployment."
+            exit 0
+          fi
+          mkdir -p "$HOME/.kube"
+          echo "${KUBECONFIG_B64}" | base64 -d > "$HOME/.kube/config"
+          echo "HAS_KUBECONFIG=1" >> "$GITHUB_ENV"
+
+      - name: Deploy
+        if: ${{ env.HAS_KUBECONFIG == '1' }}
+        run: |
+          make publish

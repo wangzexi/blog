@@ -1,0 +1,45 @@
+#!/usr/bin/env sh
+set -eu
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+BLOG_SKILL_DIR="$SCRIPT_DIR"
+ROOT_DIR="${BLOG_ROOT:-"$(cd "$BLOG_SKILL_DIR/../.." && pwd)"}"
+MANIFEST="${BLOG_MANIFEST:-${ROOT_DIR}/.agent/skills/blog/blog-deploy.yaml}"
+KUBECTL_BIN="${KUBECTL_BIN:-kubectl}"
+TARGET_POD_QUERY="${TARGET_POD_QUERY:-app=blog}"
+TARGET_NAMESPACE="${TARGET_NAMESPACE:-blog}"
+LOCAL_BLOG_PATH="${LOCAL_BLOG_PATH:-$ROOT_DIR}"
+
+if ! command -v "$KUBECTL_BIN" >/dev/null 2>&1; then
+  echo "kubectl not found. Set KUBECTL_BIN to your kubectl binary path."
+  exit 1
+fi
+
+if [ ! -f "$MANIFEST" ]; then
+  echo "Deploy manifest not found: $MANIFEST"
+  exit 1
+fi
+
+cd "$ROOT_DIR"
+python3 .agent/skills/blog/gen_sidebar.py
+
+if [ ! -x "$KUBECTL_BIN" ]; then
+  KUBECTL_BIN="$(command -v "$KUBECTL_BIN")"
+fi
+
+"$KUBECTL_BIN" apply -f "$MANIFEST"
+"$KUBECTL_BIN" -n "$TARGET_NAMESPACE" rollout status deploy/blog --timeout=120s
+
+BLOG_POD="$("$KUBECTL_BIN" -n "$TARGET_NAMESPACE" get pod -l "$TARGET_POD_QUERY" -o jsonpath='{.items[0].metadata.name}')"
+if [ -z "$BLOG_POD" ]; then
+  echo "No blog pod found with selector: $TARGET_POD_QUERY"
+  exit 1
+fi
+
+echo "Syncing content to pod: $BLOG_POD"
+rsync -av \
+  --delete \
+  --exclude='.git' \
+  -e "$KUBECTL_BIN exec -i -n $TARGET_NAMESPACE $BLOG_POD --" \
+  "$LOCAL_BLOG_PATH"/ \
+  "${BLOG_POD}:/usr/share/nginx/html/"

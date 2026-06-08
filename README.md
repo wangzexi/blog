@@ -22,11 +22,10 @@ make preview
 
 ## 发布到 `blog.zexi.me`
 
-仓库 `wangzexi/zexi-me` 里的 `services/blog.yaml` 定义了一个简单的静态服务部署，入口域名是 `blog.zexi.me`。执行：
+`blog` 仓库已经收拢发布逻辑，建议用本仓库直接发布。`publish` 会先生成侧边栏，再把内容同步到线上 Pod：
 
 ```bash
-cd /path/to/wangzexi/zexi-me/services
-./deploy-blog.sh
+make publish
 ```
 
-即可在集群里创建 `blog` 命名空间、创建 Deployment/Service/Ingress，并把当前本地仓库内容同步到容器内。
+如需可视化自动化发布，可在 GitHub Action 中设置 `KUBECONFIG_B64` Secret 后，推送到 `main` 后自动触发。
