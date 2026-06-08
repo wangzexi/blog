@@ -3,7 +3,22 @@ set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BLOG_SKILL_DIR="$SCRIPT_DIR"
-ROOT_DIR="${BLOG_ROOT:-"$(cd "$BLOG_SKILL_DIR/../.." && pwd)"}"
+
+if [ -n "${BLOG_ROOT:-}" ]; then
+  ROOT_DIR="$BLOG_ROOT"
+else
+  ROOT_DIR="$SCRIPT_DIR"
+  while [ "$ROOT_DIR" != "/" ]; do
+    if [ -d "$ROOT_DIR/.git" ]; then
+      break
+    fi
+    ROOT_DIR="$(dirname "$ROOT_DIR")"
+  done
+  if [ ! -d "$ROOT_DIR/.git" ]; then
+    ROOT_DIR="$(cd "$BLOG_SKILL_DIR/../.." && pwd)"
+  fi
+fi
+
 MANIFEST="${BLOG_MANIFEST:-${ROOT_DIR}/.agent/skills/blog/blog-deploy.yaml}"
 KUBECTL_BIN="${KUBECTL_BIN:-kubectl}"
 TARGET_POD_QUERY="${TARGET_POD_QUERY:-app=blog}"
