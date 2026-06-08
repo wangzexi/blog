@@ -2,12 +2,27 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Wangzexi Blog</title>
+  <title>Zexi's Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
   <style>
     :root {
       --theme-color: #2d7ff9;
+    }
+    .blog-meta {
+      color: #666;
+      font-size: 14px;
+      margin-top: -8px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .blog-meta span {
+      background: #f5f8ff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid #dce7ff;
     }
   </style>
 </head>
@@ -15,7 +30,52 @@
   <div id="app">加载中…</div>
   <script>
     window.$docsify = {
-      name: 'Wangzexi Blog',
+      name: "Zexi's Blog",
+      plugins: [
+        function (hook) {
+          hook.beforeEach(function (content) {
+            const frontMatterReg = /^---\n([\s\S]*?)\n---\n/;
+            const match = content.match(frontMatterReg);
+
+            if (!match) {
+              return content;
+            }
+
+            const rawMeta = match[1].trim();
+            const meta = {};
+            for (const line of rawMeta.split('\n')) {
+              const pairMatch = line.match(/^([^:]+):\s*(.*)$/);
+              if (!pairMatch) {
+                continue;
+              }
+
+              const key = pairMatch[1].trim();
+              const value = pairMatch[2].trim().replace(/^"|"$/g, '');
+              if (key && value) {
+                meta[key] = value;
+              }
+            }
+
+            const createdAt = meta.created_at || meta.careted_at || meta.create_at;
+            const updatedAt = meta.updated_at || meta.update_at || meta.updateat;
+
+            if (!createdAt && !updatedAt) {
+              return content.replace(frontMatterReg, '');
+            }
+
+            const blocks = [];
+            if (createdAt) {
+              blocks.push(`创建时间：${createdAt}`);
+            }
+            if (updatedAt) {
+              blocks.push(`更新时间：${updatedAt}`);
+            }
+
+            const metaHtml = `<div class="blog-meta"><span>${blocks.join('</span><span>')}</span></div>`;
+            return content.replace(frontMatterReg, `${metaHtml}\n`);
+          });
+        },
+      ],
       loadSidebar: true,
       subMaxLevel: 2,
       loadNavbar: false,
