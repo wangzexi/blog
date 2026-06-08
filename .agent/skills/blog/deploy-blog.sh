@@ -1,4 +1,8 @@
 #!/usr/bin/env sh
+#
+# 注意：日常发布请直接 push 到 main 分支，由 GitHub Actions 自动完成。
+# 本脚本仅用于应急调试场景（kubectl 直连集群手动同步）。
+#
 set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
