@@ -1,5 +1,5 @@
 preview:
-	python3 -m http.server 4173
+	./.agent/skills/blog/dev-preview.sh
 
 sync-sidebar:
 	python3 .agent/skills/blog/gen_sidebar.py
