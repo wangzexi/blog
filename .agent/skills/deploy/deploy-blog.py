@@ -17,6 +17,43 @@ import tarfile
 import time
 
 
+def generate_sidebar(root: pathlib.Path) -> None:
+    """Generate _sidebar.md from article directories."""
+    visible_names = {
+        "assets", "repos", ".github", ".agent", "node_modules",
+    }
+
+    dirs = sorted(
+        (
+            d for d in root.iterdir()
+            if d.is_dir()
+            and not d.name.startswith(".")
+            and d.name not in visible_names
+            and not d.name.startswith("_")
+            and (d / "README.md").exists()
+        ),
+        key=lambda p: p.name.lower(),
+    )
+
+    lines = ["- [首页](/)"]
+    for folder in dirs:
+        readme = folder / "README.md"
+        title = folder.name
+        if readme.exists():
+            with readme.open("r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line.startswith("# "):
+                        title = line[2:].strip()
+                        break
+        link = f"{folder.name}/README.md".replace(" ", "%20")
+        lines.append(f"- [{title}]({link})")
+
+    (root / "_sidebar.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"  Sidebar generated: {len(dirs)} articles")
+
+
+
 def _blog_root() -> pathlib.Path:
     env_root = os.environ.get("BLOG_ROOT")
     if env_root:
@@ -53,12 +90,8 @@ def main() -> None:
     print(f"  Root: {ROOT}")
 
     # 1. Generate sidebar
-    sidebar = SKILL_DIR / "gen_sidebar.py"
-    if sidebar.exists():
-        print("  Generating sidebar...")
-        subprocess.run([sys.executable, str(sidebar)], check=True)
-    else:
-        print("  [warn] gen_sidebar.py not found, skipping")
+    print("  Generating sidebar...")
+    generate_sidebar(ROOT)
 
     # 2. Apply K8s manifest
     print("  Applying manifest...")
