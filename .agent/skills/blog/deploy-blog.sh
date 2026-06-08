@@ -53,4 +53,12 @@ fi
 
 echo "Syncing content to pod: $BLOG_POD"
 "$KUBECTL_BIN" exec -i -n "$TARGET_NAMESPACE" "$BLOG_POD" -- rm -rf /usr/share/nginx/html/*
-tar -cf - --exclude='.git' -C "$LOCAL_BLOG_PATH" . | "$KUBECTL_BIN" exec -i -n "$TARGET_NAMESPACE" "$BLOG_POD" -- tar -xf - -C /usr/share/nginx/html
+for i in 1 2; do
+  echo "  Sync attempt $i..."
+  if tar -cf - --exclude='.git' -C "$LOCAL_BLOG_PATH" . | "$KUBECTL_BIN" exec -i -n "$TARGET_NAMESPACE" "$BLOG_POD" -- tar -xf - -C /usr/share/nginx/html 2>/dev/null; then
+    echo "  Sync succeeded"
+    break
+  fi
+  [ "$i" -eq 2 ] && { echo "  Sync failed"; exit 1; }
+  sleep 3
+done
