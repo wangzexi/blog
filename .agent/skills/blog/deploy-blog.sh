@@ -52,9 +52,5 @@ if [ -z "$BLOG_POD" ]; then
 fi
 
 echo "Syncing content to pod: $BLOG_POD"
-rsync -av \
-  --delete \
-  --exclude='.git' \
-  -e "$KUBECTL_BIN exec -i -n $TARGET_NAMESPACE $BLOG_POD --" \
-  "$LOCAL_BLOG_PATH"/ \
-  "${BLOG_POD}:/usr/share/nginx/html/"
+"$KUBECTL_BIN" exec -i -n "$TARGET_NAMESPACE" "$BLOG_POD" -- rm -rf /usr/share/nginx/html/*
+tar -cf - --exclude='.git' -C "$LOCAL_BLOG_PATH" . | "$KUBECTL_BIN" exec -i -n "$TARGET_NAMESPACE" "$BLOG_POD" -- tar -xf - -C /usr/share/nginx/html
