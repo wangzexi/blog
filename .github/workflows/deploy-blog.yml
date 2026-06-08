@@ -42,4 +42,4 @@ jobs:
       - name: Deploy
         if: ${{ env.HAS_KUBECONFIG == '1' }}
         run: |
-          bash .agent/skills/blog/deploy-blog.sh
+          bash .agent/skills/deploy/deploy-blog.sh

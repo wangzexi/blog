@@ -23,7 +23,7 @@ else
   fi
 fi
 
-MANIFEST="${BLOG_MANIFEST:-${ROOT_DIR}/.agent/skills/blog/blog-deploy.yaml}"
+MANIFEST="${BLOG_MANIFEST:-${ROOT_DIR}/.agent/skills/deploy/blog-deploy.yaml}"
 KUBECTL_BIN="${KUBECTL_BIN:-kubectl}"
 TARGET_POD_QUERY="${TARGET_POD_QUERY:-app=blog}"
 TARGET_NAMESPACE="${TARGET_NAMESPACE:-blog}"
@@ -40,7 +40,7 @@ if [ ! -f "$MANIFEST" ]; then
 fi
 
 cd "$ROOT_DIR"
-python3 .agent/skills/blog/gen_sidebar.py
+python3 .agent/skills/deploy/gen_sidebar.py
 
 if [ ! -x "$KUBECTL_BIN" ]; then
   KUBECTL_BIN="$(command -v "$KUBECTL_BIN")"
