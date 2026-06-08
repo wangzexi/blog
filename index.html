@@ -32,6 +32,14 @@
       name: "Zexi's Blog",
       plugins: [
         function (hook) {
+          hook.doneEach(function () {
+            const main = document.querySelector('.content');
+            if (!main || document.querySelector('.blog-footer')) return;
+            const footer = document.createElement('div');
+            footer.className = 'blog-footer';
+            footer.innerHTML = '<a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">京ICP备2022027945号-3</a>';
+            main.appendChild(footer);
+          });
           hook.beforeEach(function (content) {
             const frontMatterReg = /^---\n([\s\S]*?)\n---\n/;
             const match = content.match(frontMatterReg);
@@ -94,21 +102,18 @@
     window.mermaid = mermaid;
   </script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-mermaid@2.0.1/dist/docsify-mermaid.js"></script>
-  <div id="blog-footer">
-    <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">京ICP备2022027945号-3</a>
-  </div>
   <style>
-    #blog-footer {
+    .blog-footer {
       text-align: center;
-      padding: 24px 0 32px;
+      padding: 40px 0 48px;
       font-size: 13px;
       color: #999;
     }
-    #blog-footer a {
+    .blog-footer a {
       color: #999;
       text-decoration: none;
     }
-    #blog-footer a:hover {
+    .blog-footer a:hover {
       color: var(--theme-color, #2d7ff9);
     }
   </style>
