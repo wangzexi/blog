@@ -63,7 +63,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: blog.zexi.me
+    - host: zexi.me
       http:
         paths:
           - path: /
