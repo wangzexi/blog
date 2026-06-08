@@ -65,10 +65,10 @@
             const fmt = (s) => s.replace(/\s*[+-]\d{4}$/, '');
             const blocks = [];
             if (createdAt) {
-              blocks.push(`创建：${fmt(createdAt)}`);
+              blocks.push(`创建 ${fmt(createdAt)}`);
             }
             if (updatedAt) {
-              blocks.push(`更新：${fmt(updatedAt)}`);
+              blocks.push(`更新 ${fmt(updatedAt)}`);
             }
 
             const metaHtml = `<div class="blog-meta"><span>${blocks.join('</span><span>')}</span></div>`;
