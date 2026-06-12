@@ -52,8 +52,7 @@
     .sidebar {
       left: auto !important;
       right: 0 !important;
-      border-left: 1px solid rgba(0,0,0,0.07);
-      border-right: none !important;
+      border: none !important;
     }
     .sidebar-toggle { display: none !important; }
     .content {
@@ -66,6 +65,7 @@
     .home-page .sidebar { display: none !important; }
     .home-page .content { right: 0 !important; }
 
+    .app-name { display: none !important; }
     .sidebar-nav { padding-top: 12px; }
     .sidebar-nav ul { margin: 0; }
 
@@ -83,7 +83,7 @@
   <div id="app">加载中…</div>
   <script>
     window.$docsify = {
-      name: "Zexi's Blog",
+      name: '',
       homepage: 'home.md',
       loadSidebar: true,
       subMaxLevel: 3,
