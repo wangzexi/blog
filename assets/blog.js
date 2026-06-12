@@ -72,8 +72,8 @@
         var title = getPageTitle(main.innerHTML);
         var bc = document.createElement('div');
         bc.className = 'blog-breadcrumb';
-        bc.innerHTML = '<a href="#/">🏠 首页</a><span class="sep">›</span><span class="current">' + title + '</span>';
-        main.insertBefore(bc, main.firstChild);
+        bc.innerHTML = '<a href="#/">首页</a><span class="sep"> / </span><span class="current">' + title + '</span>';
+        main.insertBefore(bc, main.firstElementChild);
       }
     });
   };
