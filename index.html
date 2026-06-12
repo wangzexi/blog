@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
   <style>
-    :root {
-      --theme-color: #2d7ff9;
-    }
+    :root { --theme-color: #2d7ff9; }
+
+    /* 文章元信息 */
     .blog-meta {
       color: #999;
       font-size: 13px;
@@ -32,123 +32,45 @@
       padding-bottom: 12px;
       border-bottom: 1px solid #eee;
     }
-    .blog-breadcrumb a {
-      color: var(--theme-color, #2d7ff9);
-      text-decoration: none;
-    }
-    .blog-breadcrumb a:hover {
-      text-decoration: underline;
-    }
-    .blog-breadcrumb .sep {
-      margin: 0 6px;
-      color: #ccc;
-    }
-    .blog-breadcrumb .current {
-      color: #333;
-    }
+    .blog-breadcrumb a { color: var(--theme-color, #2d7ff9); text-decoration: none; }
+    .blog-breadcrumb a:hover { text-decoration: underline; }
+    .blog-breadcrumb .sep { margin: 0 6px; color: #ccc; }
+    .blog-breadcrumb .current { color: #333; }
 
-    /* 时间线 */
-    .blog-timeline {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 20px 0;
-    }
-    .blog-timeline .tl-header {
-      margin-bottom: 40px;
-    }
-    .blog-timeline .tl-header h1 {
-      font-size: 2em;
-      margin-bottom: 8px;
-    }
-    .blog-timeline .tl-header p {
-      color: #666;
-      font-size: 15px;
-      line-height: 1.6;
-    }
-    .blog-timeline .tl-year {
-      font-size: 1.5em;
-      font-weight: 600;
-      color: #333;
-      margin: 32px 0 16px;
+    /* 首页时间线 */
+    .markdown-section h2 {
+      margin-top: 40px;
       padding-bottom: 8px;
       border-bottom: 2px solid var(--theme-color, #2d7ff9);
     }
-    .blog-timeline .tl-month {
-      font-size: 1em;
-      font-weight: 500;
+    .markdown-section h3 {
+      margin-top: 24px;
       color: #555;
-      margin: 20px 0 12px;
-      padding-left: 4px;
-    }
-    .blog-timeline .tl-item {
-      display: flex;
-      gap: 16px;
-      padding: 10px 12px;
-      border-radius: 6px;
-      transition: background 0.15s;
-      margin-bottom: 2px;
-    }
-    .blog-timeline .tl-item:hover {
-      background: #f5f7fa;
-    }
-    .blog-timeline .tl-date {
-      flex-shrink: 0;
-      width: 80px;
-      font-size: 13px;
-      color: #999;
-      padding-top: 2px;
-      text-align: right;
-    }
-    .blog-timeline .tl-title {
-      flex: 1;
-      font-size: 15px;
-      line-height: 1.5;
-    }
-    .blog-timeline .tl-title a {
-      color: #333;
-      text-decoration: none;
-    }
-    .blog-timeline .tl-title a:hover {
-      color: var(--theme-color, #2d7ff9);
     }
 
     /* ===== 侧边栏折叠 ===== */
-    /* 默认：侧边栏收起（translate 移出视野），内容区全宽 */
     .sidebar {
       transition: transform 0.25s ease !important;
       transform: translateX(-100%) !important;
       z-index: 20 !important;
     }
-    .sidebar-toggle {
-      display: none !important; /* 隐藏 docsify 自带的 toggle */
-    }
-
-    /* 内容区默认全宽（侧边栏收起时） */
+    .sidebar-toggle { display: none !important; }
     .content {
       left: 0 !important;
       width: 100% !important;
       transition: left 0.25s ease, width 0.25s ease !important;
     }
-
-    /* 侧边栏展开状态 */
-    .sidebar-open .sidebar {
-      transform: translateX(0) !important;
-    }
+    .sidebar-open .sidebar { transform: translateX(0) !important; }
     .sidebar-open .content {
       left: 300px !important;
       width: calc(100% - 300px) !important;
     }
 
-    /* 首页永远不显示侧边栏 */
-    .home-page .sidebar {
-      display: none !important;
-    }
-    .home-page .content {
-      left: 0 !important;
-      width: 100% !important;
-    }
+    /* 首页无侧边栏 */
+    .home-page .sidebar { display: none !important; }
+    .home-page .content { left: 0 !important; width: 100% !important; }
 
-    /* 侧边栏开关按钮 */
+    /* 侧边栏展开按钮 */
     .sidebar-trigger {
       position: fixed;
       left: 0;
@@ -171,21 +93,11 @@
       padding: 0;
       line-height: 1;
     }
-    .sidebar-trigger:hover {
-      opacity: 1;
-    }
-    /* 侧边栏展开时，按钮跟着移到侧边栏右侧边缘 */
-    .sidebar-open .sidebar-trigger {
-      left: 300px;
-    }
+    .sidebar-trigger:hover { opacity: 1; }
+    .sidebar-open .sidebar-trigger { left: 300px; }
 
-    /* 侧边栏内部微调 */
-    .sidebar-nav {
-      padding-top: 12px;
-    }
-    .sidebar-nav ul {
-      margin: 0;
-    }
+    .sidebar-nav { padding-top: 12px; }
+    .sidebar-nav ul { margin: 0; }
 
     .blog-footer {
       text-align: center;
@@ -193,13 +105,8 @@
       font-size: 13px;
       color: #999;
     }
-    .blog-footer a {
-      color: #999;
-      text-decoration: none;
-    }
-    .blog-footer a:hover {
-      color: var(--theme-color, #2d7ff9);
-    }
+    .blog-footer a { color: #999; text-decoration: none; }
+    .blog-footer a:hover { color: var(--theme-color, #2d7ff9); }
   </style>
 </head>
 <body>
@@ -208,146 +115,16 @@
   <script>
     window.$docsify = {
       name: "Zexi's Blog",
+      homepage: 'home.md',
       loadSidebar: true,
       subMaxLevel: 3,
       loadNavbar: false,
       auto2top: true,
-      plugins: [
-        // --- Blog plugin: frontmatter, footer, breadcrumb, timeline, sidebar toggle ---
-        function blogPlugin(hook, vm) {
-          function isHome() {
-            return !vm.route.path || vm.route.path === '/' || vm.route.path === '';
-          }
-
-          function getPageTitle(html) {
-            var m = html.match(/<h1[^>]*>([^<]+)<\/h1>/);
-            return m ? m[1].trim() : '';
-          }
-
-          // Parse frontmatter → meta bar
-          hook.beforeEach(function (content) {
-            var reg = /^---\n([\s\S]*?)\n---\n/;
-            var match = content.match(reg);
-            if (!match) return content;
-
-            var meta = {};
-            match[1].trim().split('\n').forEach(function (line) {
-              var p = line.match(/^([^:]+):\s*(.*)$/);
-              if (!p) return;
-              var k = p[1].trim(), v = p[2].trim().replace(/^"|"$/g, '');
-              if (k && v) meta[k] = v;
-            });
-
-            var created = meta.created_at || meta.careted_at || meta.create_at;
-            var updated = meta.updated_at || meta.update_at || meta.updateat;
-            if (!created && !updated) return content.replace(reg, '');
-
-            var fmt = function (s) { return s.replace(/\s*[+-]\d{4}$/, ''); };
-            var blocks = [];
-            if (created) blocks.push('创建 ' + fmt(created));
-            if (updated) blocks.push('更新 ' + fmt(updated));
-            var html = '<div class="blog-meta"><span>' + blocks.join('</span><span>') + '</span></div>';
-            return content.replace(reg, html + '\n');
-          });
-
-          // Sidebar toggle
-          function setupSidebarToggle() {
-            var trigger = document.getElementById('sidebarTrigger');
-            if (!trigger) return;
-            var app = document.getElementById('app');
-
-            trigger.onclick = function () {
-              app.classList.toggle('sidebar-open');
-            };
-          }
-
-          hook.doneEach(function () {
-            var main = document.querySelector('.content');
-            if (!main) return;
-
-            var app = document.getElementById('app');
-
-            // Page type: home vs article
-            if (isHome()) {
-              app.classList.add('home-page');
-              app.classList.remove('article-page', 'sidebar-open');
-            } else {
-              app.classList.add('article-page');
-              app.classList.remove('home-page');
-              // sidebar starts collapsed — don't add sidebar-open
-            }
-
-            // Footer
-            if (!document.querySelector('.blog-footer')) {
-              var f = document.createElement('div');
-              f.className = 'blog-footer';
-              f.innerHTML = '<a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">京ICP备2022027945号-3</a>';
-              main.appendChild(f);
-            }
-
-            // Breadcrumb on articles
-            if (!isHome()) {
-              var old = document.querySelector('.blog-breadcrumb');
-              if (old) old.remove();
-              var title = getPageTitle(main.innerHTML);
-              var bc = document.createElement('div');
-              bc.className = 'blog-breadcrumb';
-              bc.innerHTML = '<a href="#/">🏠 首页</a><span class="sep">›</span><span class="current">' + title + '</span>';
-              main.insertBefore(bc, main.firstChild);
-            }
-
-            // Bind sidebar toggle
-            setupSidebarToggle();
-          });
-        },
-
-        // --- Timeline homepage ---
-        function timelinePlugin(hook, vm) {
-          hook.doneEach(function () {
-            if (vm.route.path && vm.route.path !== '/' && vm.route.path !== '') return;
-            var el = document.querySelector('.content');
-            if (!el || el.querySelector('.blog-timeline')) return;
-
-            fetch('posts.json').then(function (r) { return r.json(); }).then(function (posts) {
-              if (!posts || !posts.length) return;
-              var groups = {};
-              posts.forEach(function (p) {
-                var date = p.updated_at || p.created_at || '';
-                var year = date.slice(0, 4);
-                var ym = date.length >= 7 ? date.slice(0, 7) : year;
-                if (!groups[ym]) groups[ym] = { year: year, items: [] };
-                groups[ym].items.push(p);
-              });
-              var keys = Object.keys(groups).sort().reverse();
-              var html = '<div class="blog-timeline">';
-              html += '<div class="tl-header"><h1>Zexi\'s Blog</h1><p>有价值的未必是我的结论，而是它们带给你思考的扰动。</p></div>';
-              keys.forEach(function (key) {
-                var g = groups[key];
-                html += '<div class="tl-year">' + g.year + ' 年</div>';
-                var monthGroups = {};
-                g.items.forEach(function (item) {
-                  var m = item.updated_at ? item.updated_at.slice(5, 7) : '';
-                  if (!monthGroups[m]) monthGroups[m] = [];
-                  monthGroups[m].push(item);
-                });
-                Object.keys(monthGroups).sort().reverse().forEach(function (m) {
-                  html += '<div class="tl-month">' + parseInt(m) + ' 月</div>';
-                  monthGroups[m].forEach(function (item) {
-                    var day = (item.updated_at || item.created_at || '').slice(8, 10);
-                    var path = item.path.replace(/ /g, '%20');
-                    html += '<div class="tl-item"><div class="tl-date">' + key + '-' + day + '</div><div class="tl-title"><a href="#/' + path + '">' + item.title + '</a></div></div>';
-                  });
-                });
-              });
-              html += '</div>';
-              el.innerHTML = html;
-            }).catch(function () {});
-          });
-        },
-      ],
+      plugins: [],
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="assets/blog.js"></script>
   <script type="module">
     import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
     mermaid.initialize({ startOnLoad: true });

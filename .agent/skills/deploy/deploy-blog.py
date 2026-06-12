@@ -72,8 +72,8 @@ def generate_sidebar(root: pathlib.Path) -> None:
     print("  Sidebar generated: minimal (home link only)")
 
 
-def generate_posts_json(root: pathlib.Path) -> None:
-    """Generate posts.json with article metadata for the timeline plugin."""
+def generate_posts_json(root: pathlib.Path) -> list[dict]:
+    """Generate posts.json with article metadata. Returns posts list."""
     dirs = _article_dirs(root)
     posts = []
     for folder in dirs:
@@ -88,7 +88,6 @@ def generate_posts_json(root: pathlib.Path) -> None:
             "updated_at": updated_at,
         })
 
-    # Sort by updated_at descending
     posts.sort(key=lambda p: p["updated_at"], reverse=True)
 
     (root / "posts.json").write_text(
@@ -96,6 +95,50 @@ def generate_posts_json(root: pathlib.Path) -> None:
         encoding="utf-8",
     )
     print(f"  posts.json generated: {len(posts)} posts")
+    return posts
+
+
+def _fmt_date(date_str: str) -> str:
+    """Format timestamp like '2026-06-12 17:33:57 +0800' → '2026-06-12'."""
+    return date_str[:10] if len(date_str) >= 10 else date_str
+
+
+def _url_path(path: str) -> str:
+    """URL-encode spaces in path for markdown links."""
+    return path.replace(" ", "%20")
+
+
+def generate_home_page(root: pathlib.Path, posts: list[dict]) -> None:
+    """Generate home.md — a timeline page rendered natively by docsify."""
+    lines = ["# Zexi's Blog\n"]
+    lines.append("> 有价值的未必是我的结论，而是它们带给你思考的扰动。\n")
+
+    # Group by year
+    year_groups: dict[str, list[dict]] = {}
+    for p in posts:
+        year = p["updated_at"][:4]
+        year_groups.setdefault(year, []).append(p)
+
+    for year in sorted(year_groups.keys(), reverse=True):
+        lines.append(f"\n## {year} 年\n")
+        items = year_groups[year]
+
+        # Group by month within year
+        month_groups: dict[str, list[dict]] = {}
+        for p in items:
+            m = p["updated_at"][5:7]
+            month_groups.setdefault(m, []).append(p)
+
+        for month in sorted(month_groups.keys(), reverse=True):
+            lines.append(f"\n### {int(month)} 月\n")
+            for p in month_groups[month]:
+                date = _fmt_date(p["updated_at"])
+                link = _url_path(p["path"])
+                lines.append(f"- {date}  [{p['title']}]({link})")
+
+    lines.append("")
+    (root / "home.md").write_text("\n".join(lines), encoding="utf-8")
+    print(f"  home.md generated: {len(posts)} posts")
 
 
 
@@ -134,11 +177,13 @@ def main() -> None:
     os.chdir(ROOT)
     print(f"  Root: {ROOT}")
 
-    # 1. Generate sidebar & posts metadata
+    # 1. Generate sidebar, posts metadata & timeline homepage
     print("  Generating sidebar...")
     generate_sidebar(ROOT)
     print("  Generating posts metadata...")
-    generate_posts_json(ROOT)
+    posts = generate_posts_json(ROOT)
+    print("  Generating timeline homepage...")
+    generate_home_page(ROOT, posts)
 
     # 2. Apply K8s manifest
     print("  Applying manifest...")
