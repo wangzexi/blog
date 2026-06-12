@@ -37,7 +37,7 @@
     .blog-breadcrumb .sep { margin: 0 6px; color: #ccc; }
     .blog-breadcrumb .current { color: #333; }
 
-    /* 首页时间线 */
+    /* 首页时间线样式 */
     .markdown-section h2 {
       margin-top: 40px;
       padding-bottom: 8px;
@@ -48,53 +48,23 @@
       color: #555;
     }
 
-    /* ===== 侧边栏折叠 ===== */
+    /* ===== 侧边栏放在右侧 ===== */
     .sidebar {
-      transition: transform 0.25s ease !important;
-      transform: translateX(-100%) !important;
-      z-index: 20 !important;
+      left: auto !important;
+      right: 0 !important;
+      border-left: 1px solid rgba(0,0,0,0.07);
+      border-right: none !important;
     }
     .sidebar-toggle { display: none !important; }
     .content {
       left: 0 !important;
-      width: 100% !important;
-      transition: left 0.25s ease, width 0.25s ease !important;
-    }
-    .sidebar-open .sidebar { transform: translateX(0) !important; }
-    .sidebar-open .content {
-      left: 300px !important;
-      width: calc(100% - 300px) !important;
+      right: 300px !important;
+      width: auto !important;
     }
 
     /* 首页无侧边栏 */
     .home-page .sidebar { display: none !important; }
-    .home-page .content { left: 0 !important; width: 100% !important; }
-
-    /* 侧边栏展开按钮 */
-    .sidebar-trigger {
-      position: fixed;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 30;
-      width: 28px;
-      height: 48px;
-      background: var(--theme-color, #2d7ff9);
-      color: #fff;
-      border: none;
-      border-radius: 0 6px 6px 0;
-      cursor: pointer;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0.5;
-      transition: opacity 0.2s, left 0.25s ease;
-      padding: 0;
-      line-height: 1;
-    }
-    .sidebar-trigger:hover { opacity: 1; }
-    .sidebar-open .sidebar-trigger { left: 300px; }
+    .home-page .content { right: 0 !important; }
 
     .sidebar-nav { padding-top: 12px; }
     .sidebar-nav ul { margin: 0; }
@@ -111,7 +81,6 @@
 </head>
 <body>
   <div id="app">加载中…</div>
-  <button class="sidebar-trigger" id="sidebarTrigger" title="目录">☰</button>
   <script>
     window.$docsify = {
       name: "Zexi's Blog",

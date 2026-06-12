@@ -1,7 +1,6 @@
 /**
  * Blog plugin for Docsify.
- * Handles: frontmatter meta bar, breadcrumb, footer, sidebar toggle.
- * Must be loaded after window.$docsify is defined.
+ * Handles: frontmatter meta bar, breadcrumb, footer, sidebar on right.
  */
 (function () {
   'use strict';
@@ -13,20 +12,6 @@
   function getPageTitle(html) {
     var m = html.match(/<h1[^>]*>([^<]+)<\/h1>/);
     return m ? m[1].trim() : '';
-  }
-
-  function setupSidebarToggle() {
-    var trigger = document.getElementById('sidebarTrigger');
-    var app = document.getElementById('app');
-    if (!trigger || !app) return;
-
-    // Remove stale listeners by replacing with a clone
-    var fresh = trigger.cloneNode(true);
-    trigger.parentNode.replaceChild(fresh, trigger);
-
-    fresh.addEventListener('click', function () {
-      app.classList.toggle('sidebar-open');
-    });
   }
 
   var plugin = function (hook, vm) {
@@ -56,17 +41,17 @@
       return content.replace(reg, metaHtml + '\n');
     });
 
-    // --- After render: page state, footer, breadcrumb, sidebar toggle ---
+    // --- After render: page type class, footer, breadcrumb ---
     hook.doneEach(function () {
       var main = document.querySelector('.content');
       if (!main) return;
 
       var app = document.getElementById('app');
 
-      // Page type: home vs article
+      // Page type: home hides sidebar; article shows it on the right
       if (isHome(vm)) {
         app.classList.add('home-page');
-        app.classList.remove('article-page', 'sidebar-open');
+        app.classList.remove('article-page');
       } else {
         app.classList.add('article-page');
         app.classList.remove('home-page');
@@ -90,9 +75,6 @@
         bc.innerHTML = '<a href="#/">🏠 首页</a><span class="sep">›</span><span class="current">' + title + '</span>';
         main.insertBefore(bc, main.firstChild);
       }
-
-      // Re-bind sidebar toggle
-      setupSidebarToggle();
     });
   };
 
