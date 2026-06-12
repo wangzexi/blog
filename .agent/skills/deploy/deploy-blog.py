@@ -8,6 +8,7 @@ Deploy blog content to Kubernetes.
 from __future__ import annotations
 
 import io
+import json
 import os
 import pathlib
 import re
@@ -39,13 +40,12 @@ def _sidebar_sort_key(folder: pathlib.Path) -> str:
     return ""
 
 
-def generate_sidebar(root: pathlib.Path) -> None:
-    """Generate _sidebar.md from article directories, sorted by updated_at descending."""
+def _article_dirs(root: pathlib.Path) -> list[pathlib.Path]:
+    """Get list of article directories (contain README.md)."""
     visible_names = {
         "assets", "repos", ".github", ".agent", "node_modules",
     }
-
-    dirs = [
+    return [
         d for d in root.iterdir()
         if d.is_dir()
         and not d.name.startswith(".")
@@ -54,25 +54,57 @@ def generate_sidebar(root: pathlib.Path) -> None:
         and (d / "README.md").exists()
     ]
 
-    # Sort by updated_at descending (most recent first)
+
+def _parse_frontmatter_title(readme: pathlib.Path) -> str:
+    """Parse H1 title from README. Falls back to directory name."""
+    with readme.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line.startswith("# "):
+                return line[2:].strip()
+    return readme.parent.name
+
+
+def generate_sidebar(root: pathlib.Path) -> None:
+    """Generate _sidebar.md from article directories, sorted by updated_at descending."""
+    dirs = _article_dirs(root)
     dirs.sort(key=_sidebar_sort_key, reverse=True)
 
     lines = ["- [首页](/)"]
     for folder in dirs:
         readme = folder / "README.md"
-        title = folder.name
-        if readme.exists():
-            with readme.open("r", encoding="utf-8") as f:
-                for line in f:
-                    line = line.strip()
-                    if line.startswith("# "):
-                        title = line[2:].strip()
-                        break
+        title = _parse_frontmatter_title(readme)
         link = f"{folder.name}/README.md".replace(" ", "%20")
         lines.append(f"- [{title}]({link})")
 
     (root / "_sidebar.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"  Sidebar generated: {len(dirs)} articles")
+
+
+def generate_posts_json(root: pathlib.Path) -> None:
+    """Generate posts.json with article metadata for the timeline plugin."""
+    dirs = _article_dirs(root)
+    posts = []
+    for folder in dirs:
+        readme = folder / "README.md"
+        title = _parse_frontmatter_title(readme)
+        created_at = _parse_frontmatter_date(readme, "created_at")
+        updated_at = _parse_frontmatter_date(readme, "updated_at") or created_at
+        posts.append({
+            "title": title,
+            "path": f"{folder.name}/README.md",
+            "created_at": created_at,
+            "updated_at": updated_at,
+        })
+
+    # Sort by updated_at descending
+    posts.sort(key=lambda p: p["updated_at"], reverse=True)
+
+    (root / "posts.json").write_text(
+        json.dumps(posts, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    print(f"  posts.json generated: {len(posts)} posts")
 
 
 
@@ -111,9 +143,11 @@ def main() -> None:
     os.chdir(ROOT)
     print(f"  Root: {ROOT}")
 
-    # 1. Generate sidebar
+    # 1. Generate sidebar & posts metadata
     print("  Generating sidebar...")
     generate_sidebar(ROOT)
+    print("  Generating posts metadata...")
+    generate_posts_json(ROOT)
 
     # 2. Apply K8s manifest
     print("  Applying manifest...")
