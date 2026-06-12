@@ -72,7 +72,6 @@
       margin: 32px 0 16px;
       padding-bottom: 8px;
       border-bottom: 2px solid var(--theme-color, #2d7ff9);
-      position: relative;
     }
     .blog-timeline .tl-month {
       font-size: 1em;
@@ -112,21 +111,35 @@
     .blog-timeline .tl-title a:hover {
       color: var(--theme-color, #2d7ff9);
     }
-    .blog-timeline .tl-tags {
-      display: flex;
-      gap: 6px;
-      flex-shrink: 0;
-      align-items: flex-start;
+
+    /* ===== 侧边栏折叠 ===== */
+    /* 默认：侧边栏收起（translate 移出视野），内容区全宽 */
+    .sidebar {
+      transition: transform 0.25s ease !important;
+      transform: translateX(-100%) !important;
+      z-index: 20 !important;
     }
-    .blog-timeline .tl-tag {
-      font-size: 11px;
-      color: #999;
-      background: #f0f0f0;
-      padding: 1px 8px;
-      border-radius: 10px;
+    .sidebar-toggle {
+      display: none !important; /* 隐藏 docsify 自带的 toggle */
     }
 
-    /* 首页隐藏侧边栏，内容区全宽 */
+    /* 内容区默认全宽（侧边栏收起时） */
+    .content {
+      left: 0 !important;
+      width: 100% !important;
+      transition: left 0.25s ease, width 0.25s ease !important;
+    }
+
+    /* 侧边栏展开状态 */
+    .sidebar-open .sidebar {
+      transform: translateX(0) !important;
+    }
+    .sidebar-open .content {
+      left: 300px !important;
+      width: calc(100% - 300px) !important;
+    }
+
+    /* 首页永远不显示侧边栏 */
     .home-page .sidebar {
       display: none !important;
     }
@@ -135,9 +148,43 @@
       width: 100% !important;
     }
 
-    /* 文章页面面包屑与侧边栏正常 */
-    .article-page .sidebar {
-      display: block;
+    /* 侧边栏开关按钮 */
+    .sidebar-trigger {
+      position: fixed;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 30;
+      width: 28px;
+      height: 48px;
+      background: var(--theme-color, #2d7ff9);
+      color: #fff;
+      border: none;
+      border-radius: 0 6px 6px 0;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.5;
+      transition: opacity 0.2s, left 0.25s ease;
+      padding: 0;
+      line-height: 1;
+    }
+    .sidebar-trigger:hover {
+      opacity: 1;
+    }
+    /* 侧边栏展开时，按钮跟着移到侧边栏右侧边缘 */
+    .sidebar-open .sidebar-trigger {
+      left: 300px;
+    }
+
+    /* 侧边栏内部微调 */
+    .sidebar-nav {
+      padding-top: 12px;
+    }
+    .sidebar-nav ul {
+      margin: 0;
     }
 
     .blog-footer {
@@ -157,6 +204,7 @@
 </head>
 <body>
   <div id="app">加载中…</div>
+  <button class="sidebar-trigger" id="sidebarTrigger" title="目录">☰</button>
   <script>
     window.$docsify = {
       name: "Zexi's Blog",
@@ -165,172 +213,135 @@
       loadNavbar: false,
       auto2top: true,
       plugins: [
-        // --- Frontmatter + Footer + Breadcrumb + Timeline plugin ---
+        // --- Blog plugin: frontmatter, footer, breadcrumb, timeline, sidebar toggle ---
         function blogPlugin(hook, vm) {
-          // Helper: check if current page is homepage
           function isHome() {
             return !vm.route.path || vm.route.path === '/' || vm.route.path === '';
           }
 
-          // Helper: get article title from H1 (for breadcrumb)
           function getPageTitle(html) {
-            const m = html.match(/<h1[^>]*>([^<]+)<\/h1>/);
+            var m = html.match(/<h1[^>]*>([^<]+)<\/h1>/);
             return m ? m[1].trim() : '';
           }
 
-          // Parse frontmatter and add meta info
+          // Parse frontmatter → meta bar
           hook.beforeEach(function (content) {
-            const frontMatterReg = /^---\n([\s\S]*?)\n---\n/;
-            const match = content.match(frontMatterReg);
+            var reg = /^---\n([\s\S]*?)\n---\n/;
+            var match = content.match(reg);
+            if (!match) return content;
 
-            if (!match) {
-              return content;
-            }
+            var meta = {};
+            match[1].trim().split('\n').forEach(function (line) {
+              var p = line.match(/^([^:]+):\s*(.*)$/);
+              if (!p) return;
+              var k = p[1].trim(), v = p[2].trim().replace(/^"|"$/g, '');
+              if (k && v) meta[k] = v;
+            });
 
-            const rawMeta = match[1].trim();
-            const meta = {};
-            for (const line of rawMeta.split('\n')) {
-              const pairMatch = line.match(/^([^:]+):\s*(.*)$/);
-              if (!pairMatch) continue;
-              const key = pairMatch[1].trim();
-              const value = pairMatch[2].trim().replace(/^"|"$/g, '');
-              if (key && value) meta[key] = value;
-            }
+            var created = meta.created_at || meta.careted_at || meta.create_at;
+            var updated = meta.updated_at || meta.update_at || meta.updateat;
+            if (!created && !updated) return content.replace(reg, '');
 
-            const createdAt = meta.created_at || meta.careted_at || meta.create_at;
-            const updatedAt = meta.updated_at || meta.update_at || meta.updateat;
-
-            if (!createdAt && !updatedAt) {
-              return content.replace(frontMatterReg, '');
-            }
-
-            const fmt = (s) => s.replace(/\s*[+-]\d{4}$/, '');
-            const blocks = [];
-            if (createdAt) blocks.push('创建 ' + fmt(createdAt));
-            if (updatedAt) blocks.push('更新 ' + fmt(updatedAt));
-
-            const metaHtml = '<div class="blog-meta"><span>' + blocks.join('</span><span>') + '</span></div>';
-            return content.replace(frontMatterReg, metaHtml + '\n');
+            var fmt = function (s) { return s.replace(/\s*[+-]\d{4}$/, ''); };
+            var blocks = [];
+            if (created) blocks.push('创建 ' + fmt(created));
+            if (updated) blocks.push('更新 ' + fmt(updated));
+            var html = '<div class="blog-meta"><span>' + blocks.join('</span><span>') + '</span></div>';
+            return content.replace(reg, html + '\n');
           });
 
-          // After rendering: breadcrumb on articles, timeline on homepage
+          // Sidebar toggle
+          function setupSidebarToggle() {
+            var trigger = document.getElementById('sidebarTrigger');
+            if (!trigger) return;
+            var app = document.getElementById('app');
+
+            trigger.onclick = function () {
+              app.classList.toggle('sidebar-open');
+            };
+          }
+
           hook.doneEach(function () {
             var main = document.querySelector('.content');
             if (!main) return;
 
-            // --- Sidebar control ---
             var app = document.getElementById('app');
+
+            // Page type: home vs article
             if (isHome()) {
               app.classList.add('home-page');
-              app.classList.remove('article-page');
+              app.classList.remove('article-page', 'sidebar-open');
             } else {
               app.classList.add('article-page');
               app.classList.remove('home-page');
+              // sidebar starts collapsed — don't add sidebar-open
             }
 
-            // --- Footer ---
+            // Footer
             if (!document.querySelector('.blog-footer')) {
-              var footer = document.createElement('div');
-              footer.className = 'blog-footer';
-              footer.innerHTML = '<a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">京ICP备2022027945号-3</a>';
-              main.appendChild(footer);
+              var f = document.createElement('div');
+              f.className = 'blog-footer';
+              f.innerHTML = '<a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">京ICP备2022027945号-3</a>';
+              main.appendChild(f);
             }
 
-            // --- Breadcrumb on article pages ---
+            // Breadcrumb on articles
             if (!isHome()) {
-              // Remove existing breadcrumb before re-adding
-              var existingBc = document.querySelector('.blog-breadcrumb');
-              if (existingBc) existingBc.remove();
-
-              // Find the first element in content
-              var contentEl = document.querySelector('.content');
-              if (contentEl) {
-                var title = getPageTitle(contentEl.innerHTML);
-                var bc = document.createElement('div');
-                bc.className = 'blog-breadcrumb';
-                bc.innerHTML = '<a href="#/">🏠 首页</a><span class="sep">›</span><span class="current">' + title + '</span>';
-                contentEl.insertBefore(bc, contentEl.firstChild);
-              }
+              var old = document.querySelector('.blog-breadcrumb');
+              if (old) old.remove();
+              var title = getPageTitle(main.innerHTML);
+              var bc = document.createElement('div');
+              bc.className = 'blog-breadcrumb';
+              bc.innerHTML = '<a href="#/">🏠 首页</a><span class="sep">›</span><span class="current">' + title + '</span>';
+              main.insertBefore(bc, main.firstChild);
             }
+
+            // Bind sidebar toggle
+            setupSidebarToggle();
           });
         },
 
-        // --- Timeline homepage plugin ---
+        // --- Timeline homepage ---
         function timelinePlugin(hook, vm) {
           hook.doneEach(function () {
-            // Only on homepage
             if (vm.route.path && vm.route.path !== '/' && vm.route.path !== '') return;
+            var el = document.querySelector('.content');
+            if (!el || el.querySelector('.blog-timeline')) return;
 
-            var contentEl = document.querySelector('.content');
-            if (!contentEl) return;
-            // Avoid double render
-            if (contentEl.querySelector('.blog-timeline')) return;
-
-            // Fetch posts.json
-            fetch('posts.json')
-              .then(function (r) { return r.json(); })
-              .then(function (posts) {
-                if (!posts || !posts.length) return;
-
-                // Group by year-month
-                var groups = {};
-                posts.forEach(function (p) {
-                  var date = p.updated_at || p.created_at || '';
-                  var year = date.slice(0, 4);
-                  var ym = year;
-                  if (date.length >= 7) {
-                    ym = date.slice(0, 7); // "2026-06"
-                  }
-                  if (!groups[ym]) groups[ym] = { year: year, month: date.slice(5, 7), items: [] };
-                  groups[ym].items.push(p);
-                });
-
-                // Get sorted keys (descending)
-                var sortedKeys = Object.keys(groups).sort().reverse();
-
-                // Build timeline HTML
-                var html = '<div class="blog-timeline">';
-                html += '<div class="tl-header">';
-                html += '<h1>Zexi\'s Blog</h1>';
-                html += '<p>有价值的未必是我的结论，而是它们带给你思考的扰动。</p>';
-                html += '</div>';
-
-                sortedKeys.forEach(function (key, ki) {
-                  var g = groups[key];
-                  // Year header
-                  html += '<div class="tl-year">' + g.year + ' 年</div>';
-
-                  // Group by month within each year
-                  var monthGroups = {};
-                  g.items.forEach(function (item) {
-                    var m = item.updated_at ? item.updated_at.slice(5, 7) : '';
-                    if (!monthGroups[m]) monthGroups[m] = [];
-                    monthGroups[m].push(item);
-                  });
-
-                  var sortedMonths = Object.keys(monthGroups).sort().reverse();
-                  sortedMonths.forEach(function (m) {
-                    html += '<div class="tl-month">' + parseInt(m) + ' 月</div>';
-                    monthGroups[m].forEach(function (item) {
-                      var dateStr = item.updated_at || item.created_at || '';
-                      var day = dateStr.length >= 10 ? dateStr.slice(8, 10) : '';
-                      var path = item.path.replace(/ /g, '%20');
-                      html += '<div class="tl-item">';
-                      html += '<div class="tl-date">' + g.year + '-' + m + '-' + day + '</div>';
-                      html += '<div class="tl-title"><a href="#/' + path + '">' + item.title + '</a></div>';
-                      html += '</div>';
-                    });
-                  });
-                });
-
-                html += '</div>';
-
-                // Replace content
-                contentEl.innerHTML = html;
-              })
-              .catch(function (err) {
-                console.error('Timeline: failed to load posts.json', err);
+            fetch('posts.json').then(function (r) { return r.json(); }).then(function (posts) {
+              if (!posts || !posts.length) return;
+              var groups = {};
+              posts.forEach(function (p) {
+                var date = p.updated_at || p.created_at || '';
+                var year = date.slice(0, 4);
+                var ym = date.length >= 7 ? date.slice(0, 7) : year;
+                if (!groups[ym]) groups[ym] = { year: year, items: [] };
+                groups[ym].items.push(p);
               });
+              var keys = Object.keys(groups).sort().reverse();
+              var html = '<div class="blog-timeline">';
+              html += '<div class="tl-header"><h1>Zexi\'s Blog</h1><p>有价值的未必是我的结论，而是它们带给你思考的扰动。</p></div>';
+              keys.forEach(function (key) {
+                var g = groups[key];
+                html += '<div class="tl-year">' + g.year + ' 年</div>';
+                var monthGroups = {};
+                g.items.forEach(function (item) {
+                  var m = item.updated_at ? item.updated_at.slice(5, 7) : '';
+                  if (!monthGroups[m]) monthGroups[m] = [];
+                  monthGroups[m].push(item);
+                });
+                Object.keys(monthGroups).sort().reverse().forEach(function (m) {
+                  html += '<div class="tl-month">' + parseInt(m) + ' 月</div>';
+                  monthGroups[m].forEach(function (item) {
+                    var day = (item.updated_at || item.created_at || '').slice(8, 10);
+                    var path = item.path.replace(/ /g, '%20');
+                    html += '<div class="tl-item"><div class="tl-date">' + key + '-' + day + '</div><div class="tl-title"><a href="#/' + path + '">' + item.title + '</a></div></div>';
+                  });
+                });
+              });
+              html += '</div>';
+              el.innerHTML = html;
+            }).catch(function () {});
           });
         },
       ],
