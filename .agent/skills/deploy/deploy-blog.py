@@ -10,6 +10,7 @@ from __future__ import annotations
 import io
 import os
 import pathlib
+import re
 import shutil
 import subprocess
 import sys
@@ -17,23 +18,44 @@ import tarfile
 import time
 
 
+def _parse_frontmatter_date(readme: pathlib.Path, key: str) -> str:
+    """Parse a date field from README frontmatter. Returns empty string if not found."""
+    with readme.open("r", encoding="utf-8") as f:
+        content = f.read()
+    match = re.search(rf"^{key}:\s*\"?([^\"]+)\"?", content, re.MULTILINE)
+    return match.group(1).strip() if match else ""
+
+
+def _sidebar_sort_key(folder: pathlib.Path) -> str:
+    """Sort key: most recent updated_at first, fallback to created_at, then empty."""
+    readme = folder / "README.md"
+    if readme.exists():
+        updated = _parse_frontmatter_date(readme, "updated_at")
+        if updated:
+            return updated
+        created = _parse_frontmatter_date(readme, "created_at")
+        if created:
+            return created
+    return ""
+
+
 def generate_sidebar(root: pathlib.Path) -> None:
-    """Generate _sidebar.md from article directories."""
+    """Generate _sidebar.md from article directories, sorted by updated_at descending."""
     visible_names = {
         "assets", "repos", ".github", ".agent", "node_modules",
     }
 
-    dirs = sorted(
-        (
-            d for d in root.iterdir()
-            if d.is_dir()
-            and not d.name.startswith(".")
-            and d.name not in visible_names
-            and not d.name.startswith("_")
-            and (d / "README.md").exists()
-        ),
-        key=lambda p: p.name.lower(),
-    )
+    dirs = [
+        d for d in root.iterdir()
+        if d.is_dir()
+        and not d.name.startswith(".")
+        and d.name not in visible_names
+        and not d.name.startswith("_")
+        and (d / "README.md").exists()
+    ]
+
+    # Sort by updated_at descending (most recent first)
+    dirs.sort(key=_sidebar_sort_key, reverse=True)
 
     lines = ["- [首页](/)"]
     for folder in dirs:
