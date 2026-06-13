@@ -18,6 +18,26 @@
   var plugin = function (hook, vm) {
     // --- Frontmatter → meta bar ---
     hook.beforeEach(function (content) {
+      var body = document.body;
+      var scopedRoot = document.getElementById('app') || document.querySelector('.content') || body;
+
+      // Set page type class as early as possible to avoid first-frame flash.
+      if (isHome(vm)) {
+        body.classList.add('home-page');
+        body.classList.remove('article-page');
+        if (scopedRoot) {
+          scopedRoot.classList.add('home-page');
+          scopedRoot.classList.remove('article-page');
+        }
+      } else {
+        body.classList.add('article-page');
+        body.classList.remove('home-page');
+        if (scopedRoot) {
+          scopedRoot.classList.add('article-page');
+          scopedRoot.classList.remove('home-page');
+        }
+      }
+
       var reg = /^---\n([\s\S]*?)\n---\n/;
       var match = content.match(reg);
       if (!match) return content;

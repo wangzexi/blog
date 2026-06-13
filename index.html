@@ -49,17 +49,23 @@
     .home-page .markdown-section h3,
     .home-page .markdown-section h4 {
       font-weight: 400 !important;
+      transition: none !important;
     }
-    .home-page .markdown-section h1 {
-      font-size: 2em;
-      margin-bottom: 0.4em;
+    .home-page .markdown-section h1,
+    body.home-page .markdown-section h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.25em;
+      letter-spacing: 0;
     }
-    .home-page .markdown-section blockquote {
-      color: #666;
-      font-size: 15px;
+    .home-page .markdown-section blockquote,
+    body.home-page .markdown-section blockquote {
+      color: #777;
+      font-size: 14px;
+      font-weight: 300;
       border-left: none;
       margin: 0 0 2em 0;
       padding: 0;
+      line-height: 1.7;
     }
     .home-page .markdown-section h2 {
       font-size: 1.5em;
