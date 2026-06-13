@@ -38,9 +38,14 @@
     .blog-breadcrumb .current { color: #333; }
 
     /* ===== 首页时间线 ===== */
+    .home-page .markdown-section h1,
+    .home-page .markdown-section h2,
+    .home-page .markdown-section h3,
+    .home-page .markdown-section h4 {
+      font-weight: 400 !important;
+    }
     .home-page .markdown-section h1 {
       font-size: 2em;
-      font-weight: 500;
       margin-bottom: 0.4em;
     }
     .home-page .markdown-section blockquote {
@@ -52,14 +57,12 @@
     }
     .home-page .markdown-section h2 {
       font-size: 1.5em;
-      font-weight: 500;
       margin: 2em 0 0.8em;
       padding-bottom: 8px;
       border-bottom: 2px solid var(--theme-color, #2d7ff9);
     }
     .home-page .markdown-section h3 {
       font-size: 1em;
-      font-weight: 500;
       color: #555;
       margin: 1.4em 0 0.6em;
     }
@@ -79,16 +82,16 @@
       font-family: ui-monospace, SF Mono, Menlo, Consolas, monospace;
       margin-right: 8px;
     }
-    .home-page .markdown-section ul li a {
+    .home-page .markdown-section a,
+    .home-page .markdown-section a:visited,
+    .home-page .markdown-section a:hover,
+    .home-page .markdown-section a:active {
       color: #333 !important;
       text-decoration: none !important;
       font-size: 15px;
-      transition: color 0.15s;
+      border-bottom: none !important;
     }
-    .home-page .markdown-section ul li a:visited {
-      color: #333 !important;
-    }
-    .home-page .markdown-section ul li a:hover {
+    .home-page .markdown-section a:hover {
       color: var(--theme-color, #2d7ff9) !important;
     }
 
