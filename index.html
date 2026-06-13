@@ -138,10 +138,21 @@
     .home-page .sidebar { display: none !important; }
     .home-page .content { right: 0 !important; }
 
+    /* 右侧文章目录：去掉首页入口和 - 前缀 */
+    .sidebar-nav > ul > li:first-child {
+      display: none !important;
+    }
+    .app-sub-sidebar li:before {
+      content: '' !important;
+      padding-right: 0 !important;
+    }
+    .app-sub-sidebar li {
+      padding-left: 0 !important;
+    }
+
     .app-name { display: none !important; }
     .sidebar-nav { padding-top: 12px; }
     .sidebar-nav ul { margin: 0; }
-
     .blog-footer {
       text-align: center;
       padding: 40px 0 48px;
