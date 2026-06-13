@@ -94,9 +94,9 @@
       }
 
       // Breadcrumb on article pages
+      var oldBc = document.querySelector('.blog-breadcrumb');
+      if (oldBc) oldBc.remove();
       if (!isHome(vm)) {
-        var old = document.querySelector('.blog-breadcrumb');
-        if (old) old.remove();
         var title = getPageTitle(main.innerHTML);
         var bc = document.createElement('div');
         bc.className = 'blog-breadcrumb';
