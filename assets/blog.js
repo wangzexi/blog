@@ -6,7 +6,8 @@
   'use strict';
 
   function isHome(vm) {
-    return !vm.route.path || vm.route.path === '/' || vm.route.path === '';
+    var p = (vm.route.path || '').replace(/^\//, '');
+    return p === '' || p === 'home.md' || p === 'README.md';
   }
 
   function getPageTitle(html) {
