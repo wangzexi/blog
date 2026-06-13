@@ -121,6 +121,33 @@
       text-underline-offset: 3px !important;
     }
 
+    /* 全局链接色：文章页 + hover 一并用粉色系 */
+    .markdown-section a,
+    .markdown-section a:visited,
+    .markdown-section a:hover,
+    .app-nav a,
+    .app-nav a:hover,
+    .app-nav a.active,
+    .sidebar ul li a,
+    .sidebar ul li a:hover,
+    .sidebar ul li.active > a,
+    .app-sub-sidebar li a,
+    .app-sub-sidebar li a:hover {
+      color: var(--theme-color, #ff4f9a) !important;
+    }
+
+    .app-nav a.active,
+    .app-nav a:hover,
+    .sidebar ul li.active > a,
+    .sidebar ul li a:hover,
+    .app-sub-sidebar li a:hover {
+      border-color: var(--theme-color, #ff4f9a) !important;
+    }
+
+    .anchor:hover {
+      color: var(--theme-color, #ff4f9a) !important;
+    }
+
     /* ===== 侧边栏放在右侧 ===== */
     .sidebar {
       left: auto !important;
