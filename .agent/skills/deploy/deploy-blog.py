@@ -134,7 +134,7 @@ def generate_home_page(root: pathlib.Path, posts: list[dict]) -> None:
             for p in month_groups[month]:
                 date = _fmt_date(p["updated_at"])
                 link = _url_path(p["path"])
-                lines.append(f"- {date}  [{p['title']}]({link})")
+                lines.append(f"- <span class=\"tl-date\">{date}</span>  [{p['title']}]({link})")
 
     lines.append("")
     (root / "home.md").write_text("\n".join(lines), encoding="utf-8")
