@@ -52,9 +52,11 @@
       if (isHome(vm)) {
         app.classList.add('home-page');
         app.classList.remove('article-page');
+        document.title = "Zexi's Blog";
       } else {
         app.classList.add('article-page');
         app.classList.remove('home-page');
+        document.title = getPageTitle(main.innerHTML) + " · Zexi's Blog";
       }
 
       // Footer
