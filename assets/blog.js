@@ -48,15 +48,20 @@
       if (!main) return;
 
       var app = document.getElementById('app');
+      var body = document.body;
 
       // Page type: home hides sidebar; article shows it on the right
       if (isHome(vm)) {
         app.classList.add('home-page');
         app.classList.remove('article-page');
+        body.classList.add('home-page');
+        body.classList.remove('article-page');
         document.title = "Zexi's Blog";
       } else {
         app.classList.add('article-page');
         app.classList.remove('home-page');
+        body.classList.add('article-page');
+        body.classList.remove('home-page');
         document.title = getPageTitle(main.innerHTML) + " · Zexi's Blog";
       }
 

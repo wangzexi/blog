@@ -41,7 +41,11 @@
     .home-page .markdown-section h1,
     .home-page .markdown-section h2,
     .home-page .markdown-section h3,
-    .home-page .markdown-section h4 {
+    .home-page .markdown-section h4,
+    body.home-page .markdown-section h1,
+    body.home-page .markdown-section h2,
+    body.home-page .markdown-section h3,
+    body.home-page .markdown-section h4 {
       font-weight: 400 !important;
     }
     .home-page .markdown-section h1 {
@@ -85,13 +89,19 @@
     .home-page .markdown-section a,
     .home-page .markdown-section a:visited,
     .home-page .markdown-section a:hover,
-    .home-page .markdown-section a:active {
+    .home-page .markdown-section a:active,
+    body.home-page .markdown-section a,
+    body.home-page .markdown-section a:visited,
+    body.home-page .markdown-section a:hover,
+    body.home-page .markdown-section a:active {
       color: #333 !important;
       text-decoration: none !important;
       font-size: 15px;
       border-bottom: none !important;
+      font-weight: 400 !important;
     }
-    .home-page .markdown-section a:hover {
+    .home-page .markdown-section a:hover,
+    body.home-page .markdown-section a:hover {
       color: var(--theme-color, #2d7ff9) !important;
       text-decoration: underline !important;
       text-decoration-color: var(--theme-color, #2d7ff9) !important;
