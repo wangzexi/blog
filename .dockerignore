@@ -1,0 +1,8 @@
+.git
+.gitignore
+.github
+.agent
+.DS_Store
+Dockerfile
+.dockerignore
+node_modules
