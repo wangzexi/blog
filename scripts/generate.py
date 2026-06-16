@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate static blog content: sidebar, posts.json, home.md.
+"""Generate posts.json and home.md from README.md files.
 
 Called during Docker build and local dev (dev.sh).
 """
@@ -40,10 +40,6 @@ def _parse_frontmatter_title(readme: pathlib.Path) -> str:
                 return line[2:].strip()
     return readme.parent.name
 
-
-def generate_sidebar(root: pathlib.Path) -> None:
-    (root / "_sidebar.md").write_text("- [首页](/)", encoding="utf-8")
-    print("  _sidebar.md generated")
 
 
 def generate_posts_json(root: pathlib.Path) -> list[dict]:
@@ -125,7 +121,6 @@ def generate_home_page(root: pathlib.Path, posts: list[dict]) -> None:
 def main() -> None:
     root = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else pathlib.Path.cwd()
     print(f"Generating blog content in {root}...")
-    generate_sidebar(root)
     posts = generate_posts_json(root)
     generate_home_page(root, posts)
     print("Done.")
