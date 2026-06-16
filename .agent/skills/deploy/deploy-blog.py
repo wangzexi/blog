@@ -108,10 +108,21 @@ def _url_path(path: str) -> str:
     return path.replace(" ", "%20")
 
 
+def _read_root_readme(root: pathlib.Path) -> str:
+    """Read root README.md and return content after the first title line."""
+    readme_path = root / "README.md"
+    if not readme_path.exists():
+        return ""
+    content = readme_path.read_text(encoding="utf-8")
+    # strip the first "# Title" line
+    parts = content.split("\n", 1)
+    return parts[1].strip() + "\n" if len(parts) > 1 else ""
+
+
 def generate_home_page(root: pathlib.Path, posts: list[dict]) -> None:
     """Generate home.md — a timeline page rendered natively by docsify."""
     lines = ["# Zexi's Blog\n"]
-    lines.append("> 有价值的未必是我的结论，而是它们带给你思考的扰动。\n")
+    lines.append(_read_root_readme(root))
 
     # Group by year
     year_groups: dict[str, list[dict]] = {}
