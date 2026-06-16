@@ -10,4 +10,6 @@
 
 推荐你用 AI 工具打开本文件夹，先读主线，再带着被启发出的问题，让 AI 基于整个文件夹为你"现炒"。通常会比"帮我总结全文"更有价值。
 
+`git clone git@github.com:wangzexi/blog.git`
+
 
