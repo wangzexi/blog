@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
   <style>
-    :root { --theme-color: #ff4f9a; }
+    :root { --theme-color: #ff6f9e; }
 
     /* 文章元信息 */
     .blog-meta {
@@ -28,14 +28,21 @@
     .blog-breadcrumb {
       font-size: 13px;
       color: #999;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #eee;
+      margin: 0 auto 16px;
+      padding: 0 15px 8px;
+      max-width: 80%;
+      border-bottom: none;
+      box-sizing: border-box;
     }
-    .blog-breadcrumb a { color: var(--theme-color, #ff4f9a); text-decoration: none; }
+    .blog-breadcrumb a { color: var(--theme-color, #ff6f9e); text-decoration: none; }
     .blog-breadcrumb a:hover { text-decoration: underline; }
     .blog-breadcrumb .sep { color: #ccc; }
     .blog-breadcrumb .current { color: #333; }
+
+    .home-page .markdown-section h1 a,
+    .home-page .markdown-section h1 a span {
+      font-size: inherit !important;
+    }
 
     /* ===== 首页时间线 ===== */
     body.home-page .markdown-section,
@@ -53,9 +60,11 @@
     }
     .home-page .markdown-section h1,
     body.home-page .markdown-section h1 {
-      font-size: 4rem;
-      margin-bottom: 0.25em;
-      letter-spacing: 0;
+      font-size: clamp(2.5rem, 6vw, 4.5rem) !important;
+      margin-bottom: 0.15em;
+      letter-spacing: normal;
+      line-height: 1.2;
+      font-weight: 300 !important;
     }
     .home-page .markdown-section blockquote,
     body.home-page .markdown-section blockquote {
@@ -75,7 +84,7 @@
       font-size: 1.5em;
       margin: 2em 0 0.8em;
       padding-bottom: 8px;
-      border-bottom: 2px solid var(--theme-color, #ff4f9a);
+      border-bottom: 1px solid var(--theme-color, #ff6f9e);
     }
     .home-page .markdown-section h3 {
       font-size: 1em;
@@ -114,38 +123,44 @@
     }
     .home-page .markdown-section a:hover,
     body.home-page .markdown-section a:hover {
-      color: var(--theme-color, #ff4f9a) !important;
+      color: var(--theme-color, #ff6f9e) !important;
       text-decoration: underline !important;
-      text-decoration-color: var(--theme-color, #ff4f9a) !important;
+      text-decoration-color: var(--theme-color, #ff6f9e) !important;
       text-decoration-thickness: 1px !important;
       text-underline-offset: 3px !important;
     }
 
-    /* 全局链接色：文章页 + hover 一并用粉色系 */
+    /* 全局链接色：文章页正文 + hover 一并用桃红粉色系 */
     .markdown-section a,
     .markdown-section a:visited,
     .markdown-section a:hover,
     .app-nav a,
     .app-nav a:hover,
-    .app-nav a.active,
-    .sidebar ul li a,
-    .sidebar ul li a:hover,
-    .sidebar ul li.active > a,
-    .app-sub-sidebar li a,
-    .app-sub-sidebar li a:hover {
-      color: var(--theme-color, #ff4f9a) !important;
+    .app-nav a.active {
+      color: var(--theme-color, #ff6f9e) !important;
     }
 
-    .app-nav a.active,
-    .app-nav a:hover,
-    .sidebar ul li.active > a,
+    /* 侧边栏导航链接：默认低调，hover 才显色 */
+    .sidebar ul li a,
+    .app-sub-sidebar li a {
+      color: #888 !important;
+      opacity: 0.6;
+      transition: opacity 0.2s, color 0.2s;
+    }
     .sidebar ul li a:hover,
-    .app-sub-sidebar li a:hover {
-      border-color: var(--theme-color, #ff4f9a) !important;
+    .app-sub-sidebar li a:hover,
+    .sidebar ul li.active > a {
+      color: #333 !important;
+      opacity: 1;
+    }
+    .sidebar ul li a:hover,
+    .app-sub-sidebar li a:hover,
+    .sidebar ul li.active > a {
+      border-color: #ccc !important;
     }
 
     .anchor:hover {
-      color: var(--theme-color, #ff4f9a) !important;
+      color: var(--theme-color, #ff6f9e) !important;
     }
 
     /* ===== 侧边栏放在右侧 ===== */
@@ -165,9 +180,34 @@
     .home-page .sidebar { display: none !important; }
     .home-page .content { right: 0 !important; }
 
-    /* 右侧文章目录：去掉首页入口和 - 前缀 */
-    .sidebar-nav > ul > li:first-child {
-      display: none !important;
+    /* 右侧文章目录：统一字体 */
+    .sidebar-nav > ul > li > a,
+    .sidebar-nav > ul > li > p > a {
+      display: block !important;
+      font-weight: 400;
+      font-size: 14px;
+      color: #888 !important;
+      opacity: 0.6;
+      padding: 4px 0;
+      transition: opacity 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    .sidebar-nav > ul > li > a:hover,
+    .sidebar-nav > ul > li > p > a:hover {
+      color: #333 !important;
+      opacity: 1;
+    }
+    .sidebar-nav > ul > li > a.active,
+    .sidebar-nav > ul > li.active > a,
+    .sidebar-nav > ul > li.active > p > a {
+      color: #333 !important;
+      opacity: 1;
+    }
+    .sidebar-nav > ul > li {
+      margin: 0 !important;
+    }
+    .app-sub-sidebar {
+      display: block !important;
     }
     .app-sub-sidebar li:before {
       content: '' !important;
@@ -175,6 +215,17 @@
     }
     .app-sub-sidebar li {
       padding-left: 0 !important;
+    }
+    /* h2 indent */
+    .app-sub-sidebar > li {
+      padding-left: 14px !important;
+    }
+    /* h3 indent */
+    .app-sub-sidebar > li > ul > li {
+      padding-left: 14px !important;
+    }
+      padding-left: 0 !important;
+      margin: 6px 0 !important;
     }
 
     .app-name { display: none !important; }
@@ -193,7 +244,48 @@
       color: #999;
     }
     .blog-footer a { color: #999; text-decoration: none; }
-    .blog-footer a:hover { color: var(--theme-color, #ff4f9a); }
+    .blog-footer a:hover { color: var(--theme-color, #ff6f9e); }
+
+    .markdown-section hr {
+      border-bottom-width: 1px !important;
+    }
+    .markdown-section h2 {
+      border-bottom-width: 1px !important;
+    }
+    .markdown-section blockquote {
+      border-left-width: 0 !important;
+    }
+
+    @media screen and (max-width: 900px) {
+      .content {
+        right: 0 !important;
+        width: 100% !important;
+      }
+      .sidebar {
+        display: none !important;
+      }
+      .blog-breadcrumb {
+        max-width: 100%;
+        padding: 0 20px 8px;
+        margin-bottom: 12px;
+      }
+      .markdown-section {
+        max-width: 100% !important;
+        padding: 20px 20px 32px !important;
+      }
+      .home-page .markdown-section h1,
+      body.home-page .markdown-section h1 {
+        font-size: clamp(2.8rem, 7vw, 5rem);
+      }
+      .home-page .markdown-section h2 {
+        margin-top: 1.6em;
+      }
+      .home-page .markdown-section ul li,
+      .home-page .markdown-section a,
+      body.home-page .markdown-section a {
+        font-size: 16px !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -210,12 +302,23 @@
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
-  <script src="assets/blog.js"></script>
-  <script type="module">
-    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
-    mermaid.initialize({ startOnLoad: true });
-    window.mermaid = mermaid;
+  <script src="assets/blog.js?v=5"></script>
+
+  <script>
+    // Strip year prefix from timeline dates after docsify renders
+    function stripTimelineDates() {
+      document.querySelectorAll('.tl-date').forEach(function(el) {
+        var m = el.textContent.match(/^(\d{4})-(.+)$/);
+        if (m) el.textContent = m[2];
+      });
+    }
+    // Observe DOM for docsify content changes
+    var observer = new MutationObserver(stripTimelineDates);
+    observer.observe(document.body || document.documentElement, {
+      childList: true, subtree: true
+    });
+    // Also run immediately on existing elements
+    stripTimelineDates();
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify-mermaid@2.0.1/dist/docsify-mermaid.js"></script>
 </body>
 </html>
