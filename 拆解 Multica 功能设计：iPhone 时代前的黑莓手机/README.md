@@ -1,3 +1,8 @@
+---
+created_at: "2026-06-18 12:56:00 +0800"
+updated_at: "2026-06-18 12:56:00 +0800"
+---
+
 # 拆解 Multica 功能设计：iPhone 时代前的黑莓手机
 
 本文来自一个下午：我克隆了 [multica-ai/multica](https://github.com/multica-ai/multica)，一个开源 Managed Agents 平台，36K stars。
