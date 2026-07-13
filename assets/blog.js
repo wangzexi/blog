@@ -71,7 +71,7 @@
         var s = document.createElement('script');
         s.type = 'module';
         s.textContent = [
-          'import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";',
+          'import mermaid from "/assets/mermaid/mermaid.esm.min.mjs";',
           'mermaid.initialize({ startOnLoad: false });',
           'mermaid.run({ nodes: document.querySelectorAll(".mermaid") });',
         ].join('\n');
