@@ -42,11 +42,17 @@
       var pageTitle = h1 ? h1.textContent.trim() : '';
       document.title = isHome(vm) ? "Zexi's Blog" : ((pageTitle || "Zexi's Blog") + " · Zexi's Blog");
 
-      // Footer (ICP)
+      // Footer (ICP and contact links)
       if (!document.querySelector('.blog-footer')) {
         var f = document.createElement('div');
         f.className = 'blog-footer';
-        f.innerHTML = '<a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">京ICP备2022027945号-3</a>';
+        f.innerHTML = [
+          '<a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">京ICP备2022027945号-3</a>',
+          '<span aria-hidden="true"> · </span>',
+          '<a href="mailto:zexi@zexi.me">zexi@zexi.me</a>',
+          '<span aria-hidden="true"> · </span>',
+          '<a href="https://x.com/zexi_me" target="_blank" rel="noopener">X @zexi_me</a>'
+        ].join('');
         var main = document.querySelector('.content') || document.getElementById('app');
         if (main) main.appendChild(f);
       }
