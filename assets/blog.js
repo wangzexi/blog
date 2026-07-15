@@ -104,10 +104,6 @@
     toc.className = 'article-toc';
     toc.setAttribute('aria-label', '文章目录');
 
-    var title = document.createElement('strong');
-    title.className = 'article-toc__title';
-    title.textContent = '文章目录';
-
     var list = document.createElement('ol');
     list.className = 'article-toc__list';
 
@@ -128,7 +124,6 @@
       list.appendChild(item);
     });
 
-    toc.appendChild(title);
     toc.appendChild(list);
 
     return { element: toc, headings: headings };

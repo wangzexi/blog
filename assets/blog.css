@@ -237,16 +237,6 @@ textarea {
   scrollbar-width: thin;
 }
 
-.article-toc__title {
-  display: block;
-  margin: 0 0 0.8rem;
-  color: var(--blog-muted);
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
 .article-toc__list {
   padding: 0;
   margin: 0;
