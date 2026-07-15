@@ -25,6 +25,25 @@
     }
   }
 
+  function clearReaderChrome() {
+    clearTocTracking();
+
+    // Docsify reuses the content container between routes. Restore its normal
+    // shape before rendering the home page, otherwise the old article TOC can
+    // survive beside the new home Markdown.
+    document.querySelectorAll('.blog-reading-layout').forEach(function (layout) {
+      var section = layout.querySelector('.markdown-section');
+      if (section && layout.parentNode) {
+        layout.parentNode.insertBefore(section, layout);
+      }
+      layout.remove();
+    });
+
+    document.querySelectorAll('.article-breadcrumb, .article-toc').forEach(function (element) {
+      element.remove();
+    });
+  }
+
   function createFooter() {
     document.querySelectorAll('.blog-footer').forEach(function (footer) {
       footer.remove();
@@ -177,7 +196,7 @@
       var pageTitle = h1 ? h1.textContent.trim() : '';
       document.title = isHome(vm) ? "Zexi's Blog" : ((pageTitle || "Zexi's Blog") + " · Zexi's Blog");
 
-      if (isHome(vm)) clearTocTracking();
+      if (isHome(vm)) clearReaderChrome();
       else createReaderChrome(pageTitle);
 
       // Footer keeps contact methods independent, compact, and accessible.
