@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import RootReadme from '../../README.md';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { postTitle, postUrl, sortPosts } from '../lib/posts';
+
+const posts = sortPosts(await getCollection('blog'));
+const years = new Map<string, Map<string, typeof posts>>();
+
+for (const post of posts) {
+  const date = post.data.updated_at.slice(0, 10);
+  const [year, month] = date.split('-');
+  if (!years.has(year)) years.set(year, new Map());
+  const months = years.get(year)!;
+  if (!months.has(month)) months.set(month, []);
+  months.get(month)!.push(post);
+}
+---
+
+<BaseLayout pageClass="home-page">
+  <main>
+    <article class="markdown-section">
+      <RootReadme />
+
+      {[...years].map(([year, months]) => (
+        <section class="timeline-year">
+          <h2>{year} 年</h2>
+          {[...months].map(([month, monthPosts]) => (
+            <section class="timeline-month">
+              <h3>{Number(month)} 月</h3>
+              <ul>
+                {monthPosts.map((post) => (
+                  <li>
+                    <time class="tl-date" datetime={post.data.updated_at}>{post.data.updated_at.slice(5, 10)}</time>
+                    <a href={postUrl(post)}>{postTitle(post)}</a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </section>
+      ))}
+    </article>
+  </main>
+
+  <script is:inline>
+    (() => {
+      if (!location.hash.startsWith('#/')) return;
+      const legacy = location.hash.slice(2).split('?')[0].replace(/\/README(?:\.md)?$/, '');
+      if (!legacy) return;
+      try {
+        location.replace(`/${decodeURIComponent(legacy)}/`);
+      } catch {
+        location.replace(`/${legacy}/`);
+      }
+    })();
+  </script>
+</BaseLayout>

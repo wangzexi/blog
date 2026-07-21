@@ -1,0 +1,22 @@
+{
+  "name": "zexi-blog",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare:content": "node scripts/prepare-content.mjs",
+    "dev": "npm run prepare:content && ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "npm run prepare:content && export ASTRO_TELEMETRY_DISABLED=1 && astro check && astro build",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview"
+  },
+  "dependencies": {
+    "@astrojs/rss": "4.0.19",
+    "@astrojs/sitemap": "3.7.3",
+    "astro": "7.1.3",
+    "mermaid": "11.16.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.9",
+    "typescript": "6.0.3"
+  }
+}

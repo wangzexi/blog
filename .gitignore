@@ -4,6 +4,9 @@ node_modules/
 .idea/
 .vscode/
 dist/
+.astro/
+.generated-content/
+public/content-assets/
 logs/
 _sidebar.md
 posts.json

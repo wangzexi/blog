@@ -1,0 +1,14 @@
+<script>
+  import mermaid from 'mermaid';
+
+  const blocks = document.querySelectorAll<HTMLElement>('pre[data-language="mermaid"] > code');
+  for (const block of blocks) {
+    const container = document.createElement('div');
+    container.className = 'mermaid';
+    container.textContent = block.textContent;
+    block.parentElement?.replaceWith(container);
+  }
+
+  mermaid.initialize({ startOnLoad: false });
+  await mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+</script>

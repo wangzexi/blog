@@ -1,9 +1,8 @@
 /*
  * Zexi's Blog visual system
  *
- * Docsify supplies the Markdown baseline. This file owns the blog's tokens,
- * page layout, and responsive reading experience so future adjustments stay
- * in one predictable place.
+ * Astro generates the page structure at build time. This file owns the blog's
+ * tokens, layout, and responsive reading experience.
  */
 
 :root {
@@ -25,6 +24,8 @@
 
 html,
 body {
+  min-height: 100%;
+  margin: 0;
   background: var(--blog-canvas);
   color: var(--blog-ink);
 }
@@ -41,16 +42,6 @@ textarea {
   background: var(--blog-accent);
 }
 
-/* Docsify shell */
-.sidebar,
-.sidebar-toggle { display: none !important; }
-
-.content {
-  right: 0 !important;
-  left: 0 !important;
-  background: transparent;
-}
-
 .markdown-section {
   max-width: var(--blog-content-width);
   padding: 64px 32px 72px;
@@ -61,6 +52,13 @@ textarea {
 }
 
 .markdown-section > :first-child { margin-top: 0; }
+
+.markdown-section p,
+.markdown-section ul,
+.markdown-section ol { margin: 1em 0; }
+
+.markdown-section ul,
+.markdown-section ol { padding-left: 1.7em; }
 
 .markdown-section a {
   color: var(--blog-accent);
@@ -149,6 +147,7 @@ textarea {
 .markdown-section pre {
   margin: 1.8em 0;
   padding: 1.15rem 1.25rem;
+  overflow-x: auto;
   border: 1px solid var(--blog-line);
   border-radius: 0.7rem;
   box-shadow: none;
@@ -160,10 +159,11 @@ textarea {
 }
 
 .markdown-section table {
-  display: table;
+  display: block;
   width: 100%;
   margin: 1.8em 0;
-  overflow: hidden;
+  overflow-x: auto;
+  border-collapse: collapse;
   border: 1px solid var(--blog-line);
   border-radius: 0.6rem;
 }
@@ -177,9 +177,18 @@ textarea {
 .markdown-section th { background: var(--blog-surface); }
 
 .markdown-section img {
+  display: block;
+  max-width: 100%;
+  height: auto;
   border: 1px solid var(--blog-line);
   border-radius: 0.65rem;
   box-shadow: var(--blog-shadow);
+}
+
+.markdown-section .mermaid {
+  margin: 1.8em 0;
+  overflow-x: auto;
+  text-align: center;
 }
 
 /* Article reader */

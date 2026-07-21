@@ -1,0 +1,29 @@
+---
+import type { MarkdownHeading } from 'astro';
+import BaseLayout from './BaseLayout.astro';
+import Mermaid from '../components/Mermaid.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+
+interface Props {
+  title: string;
+  headings: MarkdownHeading[];
+  hasMermaid?: boolean;
+}
+
+const { title, headings, hasMermaid = false } = Astro.props;
+---
+
+<BaseLayout title={`${title} · Zexi's Blog`} pageClass="article-page">
+  <main class="blog-reading-layout">
+    <article class="markdown-section">
+      <nav class="article-breadcrumb" aria-label="面包屑导航">
+        <a href="/">首页</a>
+        <span class="article-breadcrumb__separator" aria-hidden="true">/</span>
+        <span class="article-breadcrumb__current" aria-current="page">{title}</span>
+      </nav>
+      <slot />
+    </article>
+    <TableOfContents headings={headings} />
+  </main>
+  {hasMermaid && <Mermaid />}
+</BaseLayout>
