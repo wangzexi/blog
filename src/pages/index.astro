@@ -8,7 +8,7 @@ const posts = sortPosts(await getCollection('blog'));
 const years = new Map<string, Map<string, typeof posts>>();
 
 for (const post of posts) {
-  const date = post.data.updated_at.slice(0, 10);
+  const date = post.data.created_at.slice(0, 10);
   const [year, month] = date.split('-');
   if (!years.has(year)) years.set(year, new Map());
   const months = years.get(year)!;
@@ -31,7 +31,7 @@ for (const post of posts) {
               <ul>
                 {monthPosts.map((post) => (
                   <li>
-                    <time class="tl-date" datetime={post.data.updated_at}>{post.data.updated_at.slice(5, 10)}</time>
+                    <time class="tl-date" datetime={post.data.created_at}>{post.data.created_at.slice(5, 10)}</time>
                     <a href={postUrl(post)}>{postTitle(post)}</a>
                   </li>
                 ))}
@@ -43,16 +43,4 @@ for (const post of posts) {
     </article>
   </main>
 
-  <script is:inline>
-    (() => {
-      if (!location.hash.startsWith('#/')) return;
-      const legacy = location.hash.slice(2).split('?')[0].replace(/\/README(?:\.md)?$/, '');
-      if (!legacy) return;
-      try {
-        location.replace(`/${decodeURIComponent(legacy)}/`);
-      } catch {
-        location.replace(`/${legacy}/`);
-      }
-    })();
-  </script>
 </BaseLayout>

@@ -17,6 +17,11 @@ const title = postTitle(post);
 const hasMermaid = post.body?.includes('```mermaid') ?? false;
 ---
 
-<ArticleLayout title={title} headings={headings} hasMermaid={hasMermaid}>
+<ArticleLayout
+  title={title}
+  updatedAt={post.data.updated_at}
+  headings={headings}
+  hasMermaid={hasMermaid}
+>
   <Content />
 </ArticleLayout>

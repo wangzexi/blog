@@ -7,6 +7,26 @@ const generatedContent = join(root, '.generated-content');
 const publicAssets = join(root, 'public', 'content-assets');
 const excluded = new Set(['assets', 'node_modules', 'public', 'scripts', 'src', 'dist']);
 
+function renderHighlights(markdown) {
+  let fence = null;
+
+  return markdown.split('\n').map((line) => {
+    const fenceMatch = line.match(/^\s*(`{3,}|~{3,})/);
+    if (fenceMatch) {
+      const marker = fenceMatch[1][0];
+      if (fence === marker) fence = null;
+      else if (fence === null) fence = marker;
+      return line;
+    }
+
+    if (fence !== null) return line;
+
+    return line.replace(/(`+[^`]*`+)|==(.+?)==/g, (_match, code, highlighted) =>
+      code ?? `<mark>${highlighted}</mark>`
+    );
+  }).join('\n');
+}
+
 await rm(generatedContent, { recursive: true, force: true });
 await rm(publicAssets, { recursive: true, force: true });
 await mkdir(generatedContent, { recursive: true });
@@ -28,8 +48,13 @@ for (const entry of entries) {
     continue;
   }
 
+  const title = markdown.match(/^#\s+(.+)$/m)?.[1]?.trim();
+  if (!title) throw new Error(`Missing article title in ${sourceReadme}`);
+
   const assetPrefix = `/content-assets/${entry.name}/`;
-  const publishable = markdown
+  const publishable = renderHighlights(markdown)
+    .replace(/^---\r?\n/, `---\ntitle: ${JSON.stringify(title)}\n`)
+    .replace(/^#\s+.+$(?:\r?\n)*/m, '')
     .replace(/\]\(assets\//g, `](${assetPrefix}`)
     .replace(/^```TypeScript$/gm, '```typescript');
   const targetDir = join(generatedContent, entry.name);

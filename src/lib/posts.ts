@@ -7,18 +7,17 @@ export function postSlug(post: BlogPost): string {
 }
 
 export function postTitle(post: BlogPost): string {
-  const match = post.body?.match(/^#\s+(.+)$/m);
-  return match?.[1]?.trim() || postSlug(post);
+  return post.data.title;
 }
 
 export function postUrl(post: BlogPost): string {
   return `/${postSlug(post)}/`;
 }
 
-export function postTimestamp(post: BlogPost): number {
-  return Date.parse(post.data.updated_at);
+export function postCreatedTimestamp(post: BlogPost): number {
+  return Date.parse(post.data.created_at);
 }
 
 export function sortPosts(posts: BlogPost[]): BlogPost[] {
-  return [...posts].sort((a, b) => postTimestamp(b) - postTimestamp(a));
+  return [...posts].sort((a, b) => postCreatedTimestamp(b) - postCreatedTimestamp(a));
 }

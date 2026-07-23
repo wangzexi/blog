@@ -9,6 +9,7 @@ const blog = defineCollection({
     generateId: ({ entry }) => entry.replace(/\/README\.md$/i, ''),
   }),
   schema: z.object({
+    title: z.string(),
     created_at: z.string(),
     updated_at: z.string(),
   }),
