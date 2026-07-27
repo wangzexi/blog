@@ -1,13 +1,8 @@
-node_modules/
-.playwright-cli/
 .DS_Store
 .idea/
 .vscode/
+node_modules/
 dist/
 .astro/
 .generated-content/
-public/content-assets/
-logs/
-_sidebar.md
-posts.json
-home.md
+public/
